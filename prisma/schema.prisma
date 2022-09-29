@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+    provider             = "mysql"
+    url                  = env("DATABASE_URL")
+    referentialIntegrity = "prisma"
+}
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["referentialIntegrity"]
+}
+
+model Application {
+    id          Int           @id @default(autoincrement())
+    name        String
+    apiKey      String        @unique @default(cuid())
+    transaction Transaction[]
+    transfer    Transfer[]
+    webhook     Webhook[]
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+}
+
+model Transfer {
+    id                 Int          @id @unique @default(autoincrement())
+    publicId           String       @unique @default(cuid())
+    network            Network      @default(MAINNET)
+    toPublicKey        String
+    mint               String
+    amount             Float
+    reference          String
+    successRedirectUrl String
+    failRedirectUrl    String
+    application        Application  @relation(fields: [applicationId], references: [id])
+    applicationId      Int
+    transaction        Transaction?
+    createdAt          DateTime     @default(now())
+    updatedAt          DateTime     @updatedAt
+}
+
+model Transaction {
+    id               Int         @id @default(autoincrement())
+    publicId         String      @unique @default(cuid())
+    network          Network     @default(MAINNET)
+    fromPublicKey    String
+    toPublicKey      String
+    fromTokenAccount String
+    toTokenAccount   String
+    mint             String
+    amount           Float
+    reference        String      @unique
+    hash             String      @unique
+    status           Status      @default(PENDING)
+    application      Application @relation(fields: [applicationId], references: [id])
+    applicationId    Int
+    transfer         Transfer    @relation(fields: [transferId], references: [id])
+    transferId       Int         @unique
+    createdAt        DateTime    @default(now())
+    updatedAt        DateTime    @updatedAt
+
+    @@index([status])
+}
+
+model Webhook {
+    id            Int         @id @default(autoincrement())
+    url           String
+    secret        String      @unique @default(cuid())
+    application   Application @relation(fields: [applicationId], references: [id])
+    applicationId Int
+    createdAt     DateTime    @default(now())
+    updatedAt     DateTime    @updatedAt
+
+    @@index([applicationId])
+}
+
+enum Network {
+    MAINNET
+    TESTNET
+    DEVNET
+}
+
+enum Status {
+    PENDING
+    SUCCESS
+    FAILED
+}
