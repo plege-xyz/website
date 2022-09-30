@@ -12,67 +12,76 @@ generator client {
     previewFeatures = ["referentialIntegrity"]
 }
 
-model Application {
+model App {
     id          Int           @id @default(autoincrement())
     name        String
     apiKey      String        @unique @default(cuid())
-    transaction Transaction[]
     transfer    Transfer[]
-    webhook     Webhook[]
-    createdAt   DateTime      @default(now())
-    updatedAt   DateTime      @updatedAt
+    transaction Transaction[]
+    Session     Session[]
+}
+
+model User {
+    id          Int           @id @unique @default(autoincrement())
+    publicId    String        @unique @default(cuid())
+    publicKey   String        @unique
+    transfer    Transfer[]
+    Transaction Transaction[]
+}
+
+model Session {
+    id         Int      @id @unique @default(autoincrement())
+    publicId   String   @unique @default(cuid())
+    returnUrl  String
+    transfers   Transfer[]
+    app        App      @relation(fields: [appId], references: [id])
+    appId      Int
 }
 
 model Transfer {
     id                 Int          @id @unique @default(autoincrement())
     publicId           String       @unique @default(cuid())
-    network            Network      @default(MAINNET)
-    toPublicKey        String
-    mint               String
+    network            Network
+    payer              String?
+    recipient          String
+    reference          String?
+    referencePublicKey String
     amount             Float
-    reference          String
-    successRedirectUrl String
-    failRedirectUrl    String
-    application        Application  @relation(fields: [applicationId], references: [id])
-    applicationId      Int
-    transaction        Transaction?
-    createdAt          DateTime     @default(now())
-    updatedAt          DateTime     @updatedAt
+    token              Token        @relation(fields: [tokenId], references: [id])
+    tokenId            Int
+    app                App          @relation(fields: [appId], references: [id])
+    appId              Int
+    session            Session?     @relation(fields: [sessionId], references: [id])
+    sessionId          Int?
+    user               User?         @relation(fields: [userId], references: [id])
+    userId             Int?
+    transaction        Transaction? @relation(fields: [transactionId], references: [id])
+    transactionId      Int?         @unique
 }
 
 model Transaction {
-    id               Int         @id @default(autoincrement())
-    publicId         String      @unique @default(cuid())
-    network          Network     @default(MAINNET)
-    fromPublicKey    String
-    toPublicKey      String
-    fromTokenAccount String
-    toTokenAccount   String
-    mint             String
-    amount           Float
-    reference        String      @unique
-    hash             String      @unique
-    status           Status      @default(PENDING)
-    application      Application @relation(fields: [applicationId], references: [id])
-    applicationId    Int
-    transfer         Transfer    @relation(fields: [transferId], references: [id])
-    transferId       Int         @unique
-    createdAt        DateTime    @default(now())
-    updatedAt        DateTime    @updatedAt
-
-    @@index([status])
+    id       Int       @id @default(autoincrement())
+    publicId String    @unique @default(cuid())
+    network  Network
+    hash     String    @unique
+    status   Status    @default(PENDING)
+    app      App       @relation(fields: [appId], references: [id])
+    appId    Int
+    Transfer Transfer?
+    user     User      @relation(fields: [userId], references: [id])
+    userId   Int
 }
 
-model Webhook {
-    id            Int         @id @default(autoincrement())
-    url           String
-    secret        String      @unique @default(cuid())
-    application   Application @relation(fields: [applicationId], references: [id])
-    applicationId Int
-    createdAt     DateTime    @default(now())
-    updatedAt     DateTime    @updatedAt
-
-    @@index([applicationId])
+model Token {
+    id       Int        @id @unique @default(autoincrement())
+    publicId String     @unique @default(cuid())
+    network  Network
+    mint     String
+    decimals Int
+    symbol   String     @unique
+    name     String
+    image    String
+    transfer Transfer[]
 }
 
 enum Network {

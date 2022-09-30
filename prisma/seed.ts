@@ -27,14 +27,7 @@ async function main() {
     },
   });
 
-  const product = await prisma.product.create({
-    data: {
-      name: "Helius",
-      price: 5,
-      tokenId: token.id,
-      appId: app.id,
-    },
-  });
+  console.log({ app, user, token });
 }
 
 main()

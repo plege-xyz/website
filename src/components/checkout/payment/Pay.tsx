@@ -24,26 +24,26 @@ const Pay = () => {
   const router = useRouter();
   const id = router.query.id as string;
 
-  const { mutate } = trpc.transfer.settle.useMutation({
-    onSuccess: async (data) => {
-      const connection = getConnection(network!);
-      await connection.confirmTransaction(
-        {
-          signature: data.hash,
-          blockhash: Transaction.from(Buffer.from(transaction!, "base64"))
-            .recentBlockhash!,
-          lastValidBlockHeight: await (
-            await connection.getLatestBlockhash()
-          ).lastValidBlockHeight,
-        },
-        "finalized"
-      );
-      window.location.href = successRedirectUrl!;
-    },
-    onError: (data) => {
-      setError(data.message || "Something went wrong");
-    },
-  });
+  // const { mutate } = trpc.transfer.settle.useMutation({
+  //   onSuccess: async (data) => {
+  //     const connection = getConnection(network!);
+  //     await connection.confirmTransaction(
+  //       {
+  //         signature: data.hash,
+  //         blockhash: Transaction.from(Buffer.from(transaction!, "base64"))
+  //           .recentBlockhash!,
+  //         lastValidBlockHeight: await (
+  //           await connection.getLatestBlockhash()
+  //         ).lastValidBlockHeight,
+  //       },
+  //       "finalized"
+  //     );
+  //     window.location.href = successRedirectUrl!;
+  //   },
+  //   onError: (data) => {
+  //     setError(data.message || "Something went wrong");
+  //   },
+  // });
 
   const pay = async () => {
     if (!publicKey || !transaction || !network) return;
@@ -53,11 +53,11 @@ const Pay = () => {
       const tx = Transaction.from(Buffer.from(transaction, "base64"));
       if (signTransaction) {
         const signed = await signTransaction(tx);
-        mutate({
-          transactionId: id,
-          signedTransaction: signed.serialize().toString("base64"),
-          publicKey: publicKey.toString(),
-        });
+        // mutate({
+        //   transactionId: id,
+        //   signedTransaction: signed.serialize().toString("base64"),
+        //   publicKey: publicKey.toString(),
+        // });
       } else {
         toast.error("Unable to sign transaction");
       }
