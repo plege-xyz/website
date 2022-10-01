@@ -6,8 +6,12 @@ export const getTokenAccount = (
   mint: string,
   connection: Connection
 ) => {
-  return getAssociatedTokenAddressSync(
-    new PublicKey(mint),
-    new PublicKey(publicKey)
-  );
+  try {
+    return getAssociatedTokenAddressSync(
+      new PublicKey(mint),
+      new PublicKey(publicKey)
+    );
+  } catch {
+    return undefined;
+  }
 };

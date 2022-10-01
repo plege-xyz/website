@@ -9,62 +9,27 @@ import Sol from "./Sol";
 import { trpc } from "@/utils/trpc";
 
 const Balance = () => {
-  const [tokens, setTokens] = useState<
-    | {
-        address: string;
-        symbol: string;
-        logoURI: string;
-      }[]
-    | null
-  >();
-  const { mint } = useCheckout();
-
-  const { mutate } = useMutation(["getTokenMetadata"], async () => {
-    await axios
-      .post("https://token-list-api.solana.cloud/v1/mints", {
-        addresses: [mint],
-      })
-      .then((res) => {
-        const data = res.data.content;
-        const tokens:
-          | {
-              address: string;
-              symbol: string;
-              logoURI: string;
-            }[]
-          | null = !data
-          ? null
-          : data.map((token: any) => {
-              return {
-                address: token.address,
-                symbol: token.symbol,
-                logoURI: token.logoURI,
-              };
-            });
-
-        setTokens(tokens);
-      });
-  });
-
-  useEffect(() => {
-    if (mint) {
-      mutate();
-    }
-  }, [mint]);
+  const { tokens } = useCheckout();
 
   return (
     <div className="w-full flex flex-col items-center">
       {tokens && (
         <div className="w-max py-5 flex flex-col items-center gap-y-3">
           <Sol />
-          {tokens?.map((token, key) => (
-            <Token
-              key={key}
-              image={token.logoURI}
-              symbol={token.symbol}
-              mint={token.address}
-            />
-          ))}
+          {tokens?.map((token, key) => {
+            // render multiple tokens with the same mint as one token
+            const tokenIndex = tokens.findIndex((t) => t.mint === token.mint);
+            if (tokenIndex !== key) return null;
+
+            return (
+              <Token
+                key={key}
+                image={token.image}
+                symbol={token.symbol}
+                mint={token.mint}
+              />
+            );
+          })}
         </div>
       )}
       <Wallet />

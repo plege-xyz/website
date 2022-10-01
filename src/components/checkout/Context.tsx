@@ -1,74 +1,107 @@
 import React, { useState, ReactNode, useContext, useEffect } from "react";
-import { Token } from "@/models";
 import { createContext } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey, Transaction } from "@solana/web3.js";
-import { connection } from "@/constants";
-import { getAssociatedTokenAddress } from "@solana/spl-token";
 import { Network } from "@prisma/client";
+import { useRouter } from "next/router";
+import { trpc } from "@/utils/trpc";
+
+export interface Token {
+  symbol: string;
+  image: string;
+  mint: string;
+  amount: number;
+  balance?: number;
+}
 
 interface ContextProps {
   network?: Network;
+  tokens?: Token[];
   transaction?: string;
-  mint?: string;
-  amount?: number;
-  successRedirectUrl?: string;
-  failRedirectUrl?: string;
+  returnUrl?: string;
   error: string | null;
-  setNetwork: (network: Network) => void;
   setTransaction: (transaction: string) => void;
-  setMint: (mint: string) => void;
-  setAmount: (amount: number) => void;
-  setSuccessRedirectUrl: (url: string) => void;
-  setFailRedirectUrl: (url: string) => void;
   setError: (error: string) => void;
+  setTokens: (tokens: Token[]) => void;
 }
 
 export const Context = createContext<ContextProps>({
   network: undefined,
   transaction: undefined,
-  mint: undefined,
-  amount: undefined,
-  successRedirectUrl: undefined,
-  failRedirectUrl: undefined,
+  tokens: undefined,
+  returnUrl: undefined,
   error: null,
-  setNetwork: () => {},
   setTransaction: () => {},
-  setMint: () => {},
-  setAmount: () => {},
-  setSuccessRedirectUrl: () => {},
-  setFailRedirectUrl: () => {},
   setError: () => {},
+  setTokens: () => {},
 });
 
 export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
   const [network, setNetwork] = useState<Network>();
   const [transaction, setTransaction] = useState<string>();
-  const [mint, setMint] = useState<string>();
-  const [amount, setAmount] = useState<number>();
-  const [successRedirectUrl, setSuccessRedirectUrl] = useState<string>();
-  const [failRedirectUrl, setFailRedirectUrl] = useState<string>();
   const [error, setError] = useState<string | null>(null);
+  const [tokens, setTokens] = useState<Token[]>();
+  const [returnUrl, setReturnUrl] = useState<string>();
 
   const { publicKey } = useWallet();
+
+  const router = useRouter();
+  const id = router.query.id as string;
+
+  const { mutate: getSession } = trpc.sessions.get.useMutation({
+    onSuccess(data) {
+      setNetwork(data.transfers[0]!.network);
+      setReturnUrl(data.returnUrl);
+
+      setTokens(
+        data.transfers.map((transfer) => {
+          return {
+            symbol: transfer.token.symbol,
+            image: transfer.token.image,
+            mint: transfer.token.mint,
+            amount: transfer.amount,
+          };
+        })
+      );
+    },
+    onError(error) {
+      setError(error.message);
+    },
+  });
+
+  const { mutate: getTransaction, data } = trpc.sessions.create.useMutation({
+    onSuccess(data) {
+      setTransaction(data.transaction);
+    },
+  });
+
+  useEffect(() => {
+    if (id) {
+      getSession({
+        id,
+      });
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (publicKey) {
+      getTransaction({
+        id,
+        payer: publicKey.toString(),
+      });
+    }
+  }, [publicKey]);
 
   return (
     <Context.Provider
       value={{
         network,
         transaction,
-        mint,
-        amount,
-        successRedirectUrl,
-        failRedirectUrl,
+        tokens,
+        returnUrl,
         error,
-        setNetwork,
         setTransaction,
-        setMint,
-        setAmount,
-        setSuccessRedirectUrl,
-        setFailRedirectUrl,
         setError,
+        setTokens,
       }}
     >
       {children}

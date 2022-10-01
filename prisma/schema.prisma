@@ -16,9 +16,9 @@ model App {
     id          Int           @id @default(autoincrement())
     name        String
     apiKey      String        @unique @default(cuid())
+    session     Session[]
     transfer    Transfer[]
     transaction Transaction[]
-    Session     Session[]
 }
 
 model User {
@@ -26,16 +26,16 @@ model User {
     publicId    String        @unique @default(cuid())
     publicKey   String        @unique
     transfer    Transfer[]
-    Transaction Transaction[]
+    transaction Transaction[]
 }
 
 model Session {
-    id         Int      @id @unique @default(autoincrement())
-    publicId   String   @unique @default(cuid())
-    returnUrl  String
-    transfers   Transfer[]
-    app        App      @relation(fields: [appId], references: [id])
-    appId      Int
+    id        Int        @id @unique @default(autoincrement())
+    publicId  String     @unique @default(cuid())
+    returnUrl String
+    transfers Transfer[]
+    app       App        @relation(fields: [appId], references: [id])
+    appId     Int
 }
 
 model Transfer {
@@ -53,7 +53,7 @@ model Transfer {
     appId              Int
     session            Session?     @relation(fields: [sessionId], references: [id])
     sessionId          Int?
-    user               User?         @relation(fields: [userId], references: [id])
+    user               User?        @relation(fields: [userId], references: [id])
     userId             Int?
     transaction        Transaction? @relation(fields: [transactionId], references: [id])
     transactionId      Int?         @unique
@@ -67,7 +67,7 @@ model Transaction {
     status   Status    @default(PENDING)
     app      App       @relation(fields: [appId], references: [id])
     appId    Int
-    Transfer Transfer?
+    transfer Transfer?
     user     User      @relation(fields: [userId], references: [id])
     userId   Int
 }

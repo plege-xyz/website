@@ -2,22 +2,36 @@ import { t } from "../../trpc";
 import { z } from "zod";
 import { validateApiKey } from "../utils/middleware/validateApiKey";
 import { TRPCError } from "@trpc/server";
+import { isPublicKeyValid } from "../utils/isPublicKeyValid";
+import { splTokenTransfer } from "../utils/splTokenTransfer";
 
-export const get = t.procedure
+export const create = t.procedure
   .meta({
     openapi: {
       enabled: true,
-      method: "GET",
-      path: "/sessions/{id}",
+      method: "POST",
+      path: "/sessions/create",
     },
   })
   .input(
     z.object({
       id: z.string(),
+      payer: z.string(),
     })
   )
-  .output(z.any())
+  .output(
+    z.object({
+      transaction: z.string(),
+    })
+  )
   .mutation(async ({ input, ctx }) => {
+    if (!isPublicKeyValid(input.payer)) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Invalid payer",
+      });
+    }
+
     const session = await ctx.prisma.session.findUnique({
       where: {
         publicId: input.id,
@@ -26,13 +40,14 @@ export const get = t.procedure
         returnUrl: true,
         transfers: {
           select: {
-            amount: true,
             network: true,
+            recipient: true,
+            referencePublicKey: true,
+            amount: true,
             token: {
               select: {
-                symbol: true,
-                image: true,
                 mint: true,
+                decimals: true,
               },
             },
           },
@@ -47,5 +62,12 @@ export const get = t.procedure
       });
     }
 
-    return session;
+    const tx = await splTokenTransfer({
+      payer: input.payer,
+      transfers: session.transfers,
+    });
+
+    return {
+      transaction: tx,
+    };
   });

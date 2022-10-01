@@ -13,37 +13,31 @@ const Pay = () => {
   const [status, setStatus] = useState<"PENDING" | null>(null);
 
   const { signTransaction, publicKey } = useWallet();
-  const {
-    transaction,
-    network,
-    successRedirectUrl,
-    failRedirectUrl,
-    setError,
-  } = useCheckout();
+  const { transaction, network, setError, returnUrl } = useCheckout();
 
   const router = useRouter();
   const id = router.query.id as string;
 
-  // const { mutate } = trpc.transfer.settle.useMutation({
-  //   onSuccess: async (data) => {
-  //     const connection = getConnection(network!);
-  //     await connection.confirmTransaction(
-  //       {
-  //         signature: data.hash,
-  //         blockhash: Transaction.from(Buffer.from(transaction!, "base64"))
-  //           .recentBlockhash!,
-  //         lastValidBlockHeight: await (
-  //           await connection.getLatestBlockhash()
-  //         ).lastValidBlockHeight,
-  //       },
-  //       "finalized"
-  //     );
-  //     window.location.href = successRedirectUrl!;
-  //   },
-  //   onError: (data) => {
-  //     setError(data.message || "Something went wrong");
-  //   },
-  // });
+  const { mutate: settle } = trpc.sessions.settle.useMutation({
+    onSuccess: async (data) => {
+      const connection = getConnection(network!);
+      await connection.confirmTransaction(
+        {
+          signature: data.hash,
+          blockhash: Transaction.from(Buffer.from(transaction!, "base64"))
+            .recentBlockhash!,
+          lastValidBlockHeight: await (
+            await connection.getLatestBlockhash()
+          ).lastValidBlockHeight,
+        },
+        "finalized"
+      );
+      router.push(returnUrl!);
+    },
+    onError(error) {
+      setError(error.message);
+    },
+  });
 
   const pay = async () => {
     if (!publicKey || !transaction || !network) return;
@@ -53,11 +47,11 @@ const Pay = () => {
       const tx = Transaction.from(Buffer.from(transaction, "base64"));
       if (signTransaction) {
         const signed = await signTransaction(tx);
-        // mutate({
-        //   transactionId: id,
-        //   signedTransaction: signed.serialize().toString("base64"),
-        //   publicKey: publicKey.toString(),
-        // });
+        settle({
+          id,
+          transaction: signed.serialize().toString("base64"),
+          payer: publicKey.toString(),
+        });
       } else {
         toast.error("Unable to sign transaction");
       }
@@ -69,7 +63,7 @@ const Pay = () => {
 
   return (
     <div
-      className="flex items-center justify-center mt-5 w-[20rem] h-14 bg-blue-700 hover:bg-blue-600 transition-all rounded font shapiro text-white text-xl cursor-pointer"
+      className="flex items-center justify-center mt-4 w-[20rem] h-14 bg-blue-700 hover:bg-blue-600 transition-all rounded font shapiro text-white text-xl cursor-pointer"
       onClick={pay}
     >
       {!publicKey && (
