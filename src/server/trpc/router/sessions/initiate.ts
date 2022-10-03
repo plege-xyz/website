@@ -56,7 +56,6 @@ export const initiate = t.procedure
 
     const referencePublicKey = Keypair.generate().publicKey.toString();
 
-
     const session = await ctx.prisma.session.create({
       data: {
         appId,
@@ -70,13 +69,13 @@ export const initiate = t.procedure
             amount: input.amount,
             tokenId: token.id,
             appId,
-          }
-        }
+          },
+        },
       },
       select: {
         publicId: true,
-      }
-    })
+      },
+    });
 
     return {
       id: session.publicId,

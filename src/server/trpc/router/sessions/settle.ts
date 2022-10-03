@@ -43,7 +43,7 @@ export const settle = t.procedure
 
       const user = await ctx.prisma.user.upsert({
         where: {
-          publicKey: input.payer
+          publicKey: input.payer,
         },
         create: {
           publicKey: input.payer,
@@ -51,8 +51,8 @@ export const settle = t.procedure
         update: {},
         select: {
           id: true,
-        }
-      })
+        },
+      });
 
       await ctx.prisma.session.update({
         where: {
@@ -64,8 +64,8 @@ export const settle = t.procedure
               payer: input.payer,
               user: {
                 connect: {
-                  id: user.id
-                }
+                  id: user.id,
+                },
               },
               transaction: {
                 create: {
@@ -74,15 +74,15 @@ export const settle = t.procedure
                   app: {
                     connect: {
                       id: session.appId,
-                    }
+                    },
                   },
                   user: {
                     connect: {
-                      id: user.id
-                    }
-                  }
+                      id: user.id,
+                    },
+                  },
                 },
-              }
+              },
             },
           },
         },
