@@ -19,7 +19,8 @@ export const settle = t.procedure
         publicId: input.id,
       },
       select: {
-        transfers: {
+        appId: true,
+        transfer: {
           select: {
             network: true,
           },
@@ -35,10 +36,57 @@ export const settle = t.procedure
     }
 
     try {
-      const connection = getConnection(session.transfers[0]!.network);
+      const connection = getConnection(session.transfer!.network);
       const transaction = await connection.sendRawTransaction(
         Buffer.from(input.transaction, "base64")
       );
+
+      const user = await ctx.prisma.user.upsert({
+        where: {
+          publicKey: input.payer
+        },
+        create: {
+          publicKey: input.payer,
+        },
+        update: {},
+        select: {
+          id: true,
+        }
+      })
+
+      await ctx.prisma.session.update({
+        where: {
+          publicId: input.id,
+        },
+        data: {
+          transfer: {
+            update: {
+              payer: input.payer,
+              user: {
+                connect: {
+                  id: user.id
+                }
+              },
+              transaction: {
+                create: {
+                  network: session.transfer!.network,
+                  hash: transaction,
+                  app: {
+                    connect: {
+                      id: session.appId,
+                    }
+                  },
+                  user: {
+                    connect: {
+                      id: user.id
+                    }
+                  }
+                },
+              }
+            },
+          },
+        },
+      });
 
       return {
         hash: transaction,

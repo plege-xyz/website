@@ -19,6 +19,7 @@ model App {
     session     Session[]
     transfer    Transfer[]
     transaction Transaction[]
+    webhook    Webhook[]
 }
 
 model User {
@@ -30,11 +31,11 @@ model User {
 }
 
 model Session {
-    id        Int        @id @unique @default(autoincrement())
-    publicId  String     @unique @default(cuid())
+    id        Int       @id @unique @default(autoincrement())
+    publicId  String    @unique @default(cuid())
     returnUrl String
-    transfers Transfer[]
-    app       App        @relation(fields: [appId], references: [id])
+    transfer  Transfer?
+    app       App       @relation(fields: [appId], references: [id])
     appId     Int
 }
 
@@ -52,7 +53,7 @@ model Transfer {
     app                App          @relation(fields: [appId], references: [id])
     appId              Int
     session            Session?     @relation(fields: [sessionId], references: [id])
-    sessionId          Int?
+    sessionId          Int?         @unique
     user               User?        @relation(fields: [userId], references: [id])
     userId             Int?
     transaction        Transaction? @relation(fields: [transactionId], references: [id])
@@ -82,6 +83,15 @@ model Token {
     name     String
     image    String
     transfer Transfer[]
+}
+
+model Webhook {
+    id       Int      @id @unique @default(autoincrement())
+    publicId String   @unique @default(cuid())
+    secret  String   @unique @default(cuid())
+    url      String
+    app      App      @relation(fields: [appId], references: [id])
+    appId    Int
 }
 
 enum Network {

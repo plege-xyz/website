@@ -74,8 +74,6 @@ export const splTokenTransfer = async ({
     transaction.add(transferInstruction);
   }
 
-  console.log(transaction);
-
   return transaction
     .serialize({
       requireAllSignatures: false,

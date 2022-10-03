@@ -38,7 +38,7 @@ export const create = t.procedure
       },
       select: {
         returnUrl: true,
-        transfers: {
+        transfer: {
           select: {
             network: true,
             recipient: true,
@@ -50,6 +50,7 @@ export const create = t.procedure
                 decimals: true,
               },
             },
+            transactionId: true,
           },
         },
       },
@@ -57,14 +58,21 @@ export const create = t.procedure
 
     if (!session) {
       throw new TRPCError({
-        code: "NOT_FOUND",
+        code: "BAD_REQUEST",
         message: "Session not found",
+      });
+    }
+
+    if (session?.transfer?.transactionId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Transfer already completed",
       });
     }
 
     const tx = await splTokenTransfer({
       payer: input.payer,
-      transfers: session.transfers,
+      transfers: [session.transfer!],
     });
 
     return {

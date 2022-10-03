@@ -24,7 +24,7 @@ export const get = t.procedure
       },
       select: {
         returnUrl: true,
-        transfers: {
+        transfer: {
           select: {
             amount: true,
             network: true,
@@ -35,6 +35,7 @@ export const get = t.procedure
                 mint: true,
               },
             },
+            transactionId: true,
           },
         },
       },
@@ -44,6 +45,13 @@ export const get = t.procedure
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "Session not found",
+      });
+    }
+
+    if (session.transfer!.transactionId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Session already completed",
       });
     }
 

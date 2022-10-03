@@ -49,19 +49,17 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
 
   const { mutate: getSession } = trpc.sessions.get.useMutation({
     onSuccess(data) {
-      setNetwork(data.transfers[0]!.network);
+      setNetwork(data.transfer!.network);
       setReturnUrl(data.returnUrl);
 
-      setTokens(
-        data.transfers.map((transfer) => {
-          return {
-            symbol: transfer.token.symbol,
-            image: transfer.token.image,
-            mint: transfer.token.mint,
-            amount: transfer.amount,
-          };
-        })
-      );
+      setTokens([
+        {
+          symbol: data.transfer!.token.symbol,
+          image: data.transfer!.token.image,
+          mint: data.transfer!.token.mint,
+          amount: data.transfer!.amount,
+        },
+      ]);
     },
     onError(error) {
       setError(error.message);
@@ -71,6 +69,9 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
   const { mutate: getTransaction, data } = trpc.sessions.create.useMutation({
     onSuccess(data) {
       setTransaction(data.transaction);
+    },
+    onError(error) {
+      setError(error.message);
     },
   });
 

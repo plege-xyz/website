@@ -23,11 +23,18 @@ async function main() {
       symbol: "USDC",
       name: "USDC-Dev",
       image:
-        "https://cdn.jsdelivr.net/gh/solana-labs/token-list/main/assets/mainnet/USDC.png",
+        "https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png",
     },
   });
 
-  console.log({ app, user, token });
+  const webhook = await prisma.webhook.create({
+    data: {
+      appId: app.id,
+      url: "http://localhost:3000/api/webhooks/plege"
+    },
+  });
+
+  console.log({ app, user, token, webhook });
 }
 
 main()
