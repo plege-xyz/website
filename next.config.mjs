@@ -18,9 +18,15 @@ export default defineNextConfig({
     swcMinify: true,
     async redirects() {
         return [{
-            source: "/discord",
-            destination: "https://discord.gg/c9E8VuAGsf",
-            permanent: true,
-        }, ];
+                source: "/discord",
+                destination: "https://discord.gg/c9E8VuAGsf",
+                permanent: true,
+            },
+            {
+                source: "/",
+                destination: "https://pitch.com/public/18dd2ac9-f468-4c62-b5f3-fbe525572af4",
+                permanent: true,
+            },
+        ];
     },
 });

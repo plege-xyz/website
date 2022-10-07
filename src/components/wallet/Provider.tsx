@@ -10,8 +10,6 @@ import {
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { endpoint } from "@/constants";
 
-// Default styles that can be overridden by your app
-
 const WalletProvider = ({ children }: { children: ReactNode }) => {
   const wallets = useMemo(
     () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
