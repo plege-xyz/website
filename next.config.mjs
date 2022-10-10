@@ -27,6 +27,11 @@ export default defineNextConfig({
                 destination: "https://pitch.com/public/18dd2ac9-f468-4c62-b5f3-fbe525572af4",
                 permanent: true,
             },
+            {
+                source: "/discord",
+                destination: "https://t.co/ssZbOMIp7r",
+                permanent: true,
+            },
         ];
     },
 });
