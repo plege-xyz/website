@@ -1,15 +1,11 @@
-import { NextPage } from "next";
-import Head from "next/head";
+import { circa } from "@/utils/fonts";
 
-const Home: NextPage = () => {
+const Home = () => {
   return (
-    <div>
-      <Head>
-        <link rel="stylesheet" href="/fonts/sequel-black.ttf" />
-      </Head>
-      <h1 className="w-full h-screen flex items-center justify-center text-8xl text-center text-[#ffffff] sequel-black tracking-wide">
-        {/* Revolutionizing Payments <br /> on Solana */}
-      </h1>
+    <div
+      className={`${circa} flex h-screen w-screen items-center justify-center bg-black text-8xl text-white`}
+    >
+      payments.
     </div>
   );
 };

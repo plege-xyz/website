@@ -1,107 +1,26 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-datasource db {
-    provider             = "mysql"
-    url                  = env("DATABASE_URL")
-    referentialIntegrity = "prisma"
+generator client {
+  provider = "prisma-client-js"
 }
 
-generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["referentialIntegrity"]
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Developer {
+  id            Int      @id @default(autoincrement())
+  publicKey     String   @unique
+  session       String   @unique
+  sessionExpiry DateTime
+  apps          App[]
 }
 
 model App {
-    id          Int           @id @default(autoincrement())
-    name        String
-    apiKey      String        @unique @default(cuid())
-    session     Session[]
-    transfer    Transfer[]
-    transaction Transaction[]
-    webhook    Webhook[]
-}
-
-model User {
-    id          Int           @id @unique @default(autoincrement())
-    publicId    String        @unique @default(cuid())
-    publicKey   String        @unique
-    transfer    Transfer[]
-    transaction Transaction[]
-}
-
-model Session {
-    id        Int       @id @unique @default(autoincrement())
-    publicId  String    @unique @default(cuid())
-    returnUrl String
-    transfer  Transfer?
-    app       App       @relation(fields: [appId], references: [id])
-    appId     Int
-}
-
-model Transfer {
-    id                 Int          @id @unique @default(autoincrement())
-    publicId           String       @unique @default(cuid())
-    network            Network
-    payer              String?
-    recipient          String
-    reference          String?
-    referencePublicKey String
-    amount             Float
-    token              Token        @relation(fields: [tokenId], references: [id])
-    tokenId            Int
-    app                App          @relation(fields: [appId], references: [id])
-    appId              Int
-    session            Session?     @relation(fields: [sessionId], references: [id])
-    sessionId          Int?         @unique
-    user               User?        @relation(fields: [userId], references: [id])
-    userId             Int?
-    transaction        Transaction? @relation(fields: [transactionId], references: [id])
-    transactionId      Int?         @unique
-}
-
-model Transaction {
-    id       Int       @id @default(autoincrement())
-    publicId String    @unique @default(cuid())
-    network  Network
-    hash     String    @unique
-    status   Status    @default(PENDING)
-    app      App       @relation(fields: [appId], references: [id])
-    appId    Int
-    transfer Transfer?
-    user     User      @relation(fields: [userId], references: [id])
-    userId   Int
-}
-
-model Token {
-    id       Int        @id @unique @default(autoincrement())
-    publicId String     @unique @default(cuid())
-    network  Network
-    mint     String
-    decimals Int
-    symbol   String     @unique
-    name     String
-    image    String
-    transfer Transfer[]
-}
-
-model Webhook {
-    id       Int      @id @unique @default(autoincrement())
-    publicId String   @unique @default(cuid())
-    secret  String   @unique @default(cuid())
-    url      String
-    app      App      @relation(fields: [appId], references: [id])
-    appId    Int
-}
-
-enum Network {
-    MAINNET
-    TESTNET
-    DEVNET
-}
-
-enum Status {
-    PENDING
-    SUCCESS
-    FAILED
+  id         Int         @id @default(autoincrement())
+  publicId   String      @unique
+  name       String
+  developers Developer[]
 }
