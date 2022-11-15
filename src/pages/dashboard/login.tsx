@@ -28,7 +28,7 @@ const Dashboard = () => {
       setCookie("expiry", expiry);
 
       console.log("redirect", redirect);
-      router.push(redirect || "/dashboard");
+      window.location.href = redirect || "/dashboard";
     }
   }, [data, router]);
 
