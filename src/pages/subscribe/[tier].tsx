@@ -43,7 +43,10 @@ const Subscribe = () => {
         publicKey
       );
 
-      console.log(data.tier.app);
+      const owner = getAssociatedTokenAddressSync(
+        new PublicKey(USDC_MINT),
+        new PublicKey(data.app.auth)
+      );
 
       const [subscription] = findProgramAddressSync(
         [
@@ -58,7 +61,7 @@ const Subscribe = () => {
         .createSubscription()
         .accounts({
           app: data.tier.app,
-          tier: data.tier.mint,
+          tier: tier,
           subscriber: publicKey,
           subscriberAta,
           subscription,
@@ -69,8 +72,8 @@ const Subscribe = () => {
         .completePayment()
         .accounts({
           app: data.tier.app,
-          tier: data.tier.mint,
-          owner: data.app.auth,
+          tier: tier,
+          owner,
           subscriberAta,
           subscription,
         })
@@ -120,7 +123,9 @@ const Subscribe = () => {
                     alt=""
                     className="ml-2.5 h-7 w-7"
                   />
-                  <div className="mt-1.5 ml-3 text-xl">120</div>
+                  <div className="mt-1.5 ml-3 text-xl">
+                    {data.tier.price / 10 ** 6}
+                  </div>
                 </div>
                 <div className="mr-4 mt-1 text-lg">/ month</div>
               </div>

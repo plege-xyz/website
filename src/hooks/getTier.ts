@@ -14,7 +14,7 @@ export const getTier = async (tier: string) => {
       app: _tier.app.toString(),
     },
     app: {
-      auth: app.auth,
+      auth: app.auth.toString(),
       name: app.name,
     },
   };
