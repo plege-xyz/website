@@ -6,12 +6,13 @@ export const DynamicWallet = dynamic(
   { ssr: false }
 );
 
-const Wallet = () => {
+const Wallet = ({ style }: { style?: React.CSSProperties }) => {
   return (
     <DynamicWallet
       style={{
         background: "white",
         color: "black",
+        ...style,
       }}
     />
   );

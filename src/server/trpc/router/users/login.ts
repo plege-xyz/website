@@ -1,14 +1,16 @@
 import { router, publicProcedure } from "../../trpc";
 import { z } from "zod";
 import cuid from "cuid";
+import { TRPCError } from "@trpc/server";
 
 export const login = publicProcedure
   .input(
     z.object({
       publicKey: z.string(),
+      pda: z.string().optional(),
     })
   )
-  .mutation(async ({ ctx: { prisma }, input: { publicKey } }) => {
+  .mutation(async ({ ctx: { prisma }, input: { publicKey, pda } }) => {
     const user = await prisma.developer.findUnique({
       where: {
         publicKey,
@@ -25,6 +27,7 @@ export const login = publicProcedure
           publicKey,
           session,
           sessionExpiry: expiry,
+          pda,
         },
       });
     } else {
@@ -35,6 +38,7 @@ export const login = publicProcedure
         data: {
           session,
           sessionExpiry: expiry,
+          pda,
         },
       });
     }
@@ -42,5 +46,6 @@ export const login = publicProcedure
     return {
       session,
       expiry: expiry.getTime(),
+      pda: user?.pda || pda,
     };
   });

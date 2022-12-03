@@ -1,44 +1,74 @@
-import { useRef } from "react";
-import { VictoryBar } from "victory";
+import { tt, _space } from "@/utils/fonts";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, registerables } from "chart.js";
+ChartJS.register(...registerables);
 
-const Graph = () =>
-  //     {
-  //   data,
-  // }: {
-  //   data: {
-  //     labels: string[];
-  //     datasets: {
-  //       label: string;
-  //       data: number[];
-  //     }[];
-  //   };
-  //     }
-  {
-    // get dates of all days in the last 30 days
-    const labels = Array.from({ length: 30 }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      return date.toLocaleDateString();
-    }).reverse();
+const Graph = () => {
+  const labels = Array.from({ length: 30 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    return `${date.toLocaleString("default", {
+      month: "short",
+    })} ${date.getDate()}`;
+  }).reverse();
 
-    // get random data for the last 30 days in the shape { day: string, subscriptions: number }
-    const data = labels.map((day) => ({
-      day,
-      subscriptions: Math.floor(Math.random() * 100),
-    }));
+  const data = labels.map(() => {
+    // random number between 0 and 50
+    return Math.floor(Math.random() * 50);
+  });
 
-    return (
-      <div className="h-full w-full cursor-pointer rounded py-8">
-        <VictoryBar
-          data={data}
-          x="day"
-          y="subscriptions"
-          padding={0}
-          barRatio={1}
-          width={550}
-        />
-      </div>
-    );
-  };
+  const options = {};
+
+  return (
+    <div className="h-full w-full cursor-pointer rounded p-5 py-8">
+      <Bar
+        options={{
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+          scales: {
+            x: {
+              ticks: {
+                autoSkip: true,
+                maxTicksLimit: 5,
+                maxRotation: 0,
+                font: {
+                  family: _space.style.fontFamily,
+                },
+                color: "#c5c5c5",
+              },
+            },
+            y: {
+              ticks: {
+                autoSkip: true,
+                maxTicksLimit: 5,
+                maxRotation: 0,
+                font: {
+                  family: _space.style.fontFamily,
+                },
+                color: "#c5c5c5",
+              },
+            },
+          },
+        }}
+        data={{
+          labels: labels,
+          datasets: [
+            {
+              label: "Subscriptions",
+              data,
+              backgroundColor: "#1E40AF",
+              borderColor: "#1E40AF",
+              borderWidth: 1,
+            },
+          ],
+        }}
+      />
+    </div>
+  );
+};
 
 export default Graph;

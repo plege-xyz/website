@@ -34,4 +34,4 @@ const overpass = _overpass.className;
 const space = _space.className;
 const space_bold = _space_bold.className;
 
-export { circa, overpass, tt, space, space_bold };
+export { circa, overpass, tt, space, space_bold, _space };

@@ -1,48 +1,73 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/dashboard/Layout";
-import { App, Skeleton } from "@/components/dashboard/App";
-import { PlusIcon } from "@heroicons/react/20/solid";
+import { trpc } from "@/utils/trpc";
+import { getCookie } from "cookies-next";
+import CreateApp from "@/components/dashboard/CreateApp";
+import SkeletalLoader from "@/components/dashboard/SkeletalLoader";
+import CreateAppModal from "@/components/dashboard/CreateAppModal";
+import { App } from "@/components/dashboard/App";
 
 const Dashboard = () => {
-  const [data, setData] = useState<string>();
+  const [isCreateAppModalOpen, setIsCreateAppModalOpen] = useState(false);
+
+  const { data, mutate } = trpc.apps.getAll.useMutation({
+    retry: false,
+  });
 
   useEffect(() => {
-    setTimeout(() => {
-      setData("a");
-    }, 1000);
-  }, []);
+    if (!data) {
+      const session = getCookie("session") as string;
+      mutate({
+        session,
+      });
+    }
+  }, [data, mutate]);
+
+  const refresh = () => {
+    const session = getCookie("session") as string;
+    mutate({
+      session,
+    });
+  };
+
+  const openCreateAppModal = () => {
+    setIsCreateAppModalOpen(true);
+  };
+
+  const closeCreateAppModal = () => {
+    setIsCreateAppModalOpen(false);
+  };
 
   return (
     <Layout>
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="h-full max-w-screen-xl">
-          <div className="mt-5 flex h-10 w-full items-center justify-between">
-            <div></div>
-            {/* <button className="flex h-full w-12 items-center justify-center rounded bg-white">
-              <PlusIcon className="h-6 w-6 text-black" />
-            </button> */}
-          </div>
-          <div className="grid grid-cols-3 gap-5 pb-10">
-            {!data ? (
-              <>
-                {Array(9)
-                  .fill(0)
-                  .map((_, i) => (
-                    <Skeleton key={i} />
+      <>
+        {isCreateAppModalOpen && (
+          <CreateAppModal
+            refresh={refresh}
+            closeCreateAppModal={closeCreateAppModal}
+          />
+        )}
+        <div className="flex h-full w-full items-center justify-center">
+          <div className="h-full w-full max-w-screen-xl px-8">
+            <div className="grid grid-cols-3 gap-8 py-10">
+              {!data ? (
+                <SkeletalLoader />
+              ) : (
+                <>
+                  {data.map((app, key) => (
+                    <App
+                      key={key}
+                      name={app.data.name}
+                      publicKey={app.publicKey.toString()}
+                    />
                   ))}
-              </>
-            ) : (
-              <>
-                {Array(6)
-                  .fill(0)
-                  .map((_, i) => (
-                    <App key={i} />
-                  ))}
-              </>
-            )}
+                  <CreateApp openCreateAppModal={openCreateAppModal} />
+                </>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </>
     </Layout>
   );
 };

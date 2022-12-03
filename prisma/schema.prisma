@@ -12,6 +12,7 @@ generator client {
 model Developer {
   id            Int      @id @default(autoincrement())
   publicKey     String   @unique
+  pda           String?  @unique
   session       String   @unique
   sessionExpiry DateTime
   apps          App[]
