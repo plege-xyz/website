@@ -17,7 +17,6 @@ export const createTier = async (
   const program = getProgram(wallet);
 
   const appPDA = await program.account.app.fetch(app);
-  console.log(appPDA);
   const [tierPDA] = findProgramAddressSync(
     [
       Buffer.from("SUBSCRIPTION_TIER"),
@@ -26,8 +25,6 @@ export const createTier = async (
     ],
     programId
   );
-
-  console.log(price * 10 ** 6);
 
   const transaction = await program.methods
 

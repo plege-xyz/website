@@ -7,7 +7,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   const [url, setUrl] = useState(router.pathname);
-  console.log(url);
 
   return (
     <div className="flex h-full min-h-screen w-full flex-col bg-black text-white">

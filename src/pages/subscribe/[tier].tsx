@@ -13,6 +13,7 @@ import { PublicKey, Transaction } from "@solana/web3.js";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { confirmTransaction } from "@/hooks/confirmTransaction";
 import toast from "react-hot-toast";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
 
 const Subscribe = () => {
   const router = useRouter();
@@ -85,9 +86,8 @@ const Subscribe = () => {
 
       await confirmTransaction(transaction, sendTransaction);
       setStatus("SUCCESS");
-      toast.success("Subscribed!");
     } catch (err) {
-      console.log(err);
+      // setStatus(undefined);
       toast.error("Something went wrong");
     }
   };
@@ -95,7 +95,9 @@ const Subscribe = () => {
   return (
     <div className="h-screen w-full bg-black">
       {(isLoading || error) && (
-        <div className="flex h-full w-full items-center justify-center">
+        <div
+          className={`flex h-full w-full items-center justify-center text-white ${overpass}`}
+        >
           {isLoading ? (
             <Loader className="h-10 w-10 text-white" />
           ) : (
@@ -109,46 +111,54 @@ const Subscribe = () => {
         >
           <div className="relative flex h-full w-full items-center justify-center">
             <div className="relative flex h-full w-full max-w-xs flex-col items-center justify-center">
-              <div className={`text-center ${tt} absolute -mt-80 text-4xl`}>
-                {data.app.name}
-              </div>
-
-              <div className="mb-3 flex h-12 w-full items-center justify-between rounded border border-[#222] bg-[rgb(5,5,5)] px-4">
-                {data.tier.name}
-              </div>
-              <div className="mb-3 flex h-12 w-full items-center justify-between rounded border border-[#222] bg-[rgb(5,5,5)]">
-                <div className="flex items-center">
-                  <img
-                    src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"
-                    alt=""
-                    className="ml-2.5 h-7 w-7"
-                  />
-                  <div className="mt-1.5 ml-3 text-xl">
-                    {data.tier.price / 10 ** 6}
+              {status !== "SUCCESS" ? (
+                <>
+                  <div className={`text-center ${tt} absolute -mt-80 text-4xl`}>
+                    {data.app.name}
                   </div>
-                </div>
-                <div className="mr-4 mt-1 text-lg">/ month</div>
-              </div>
-              {!publicKey ? (
-                <Wallet
-                  style={{
-                    width: "100%",
-                    height: "3rem",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                />
-              ) : (
-                <button
-                  className="flex h-12 w-full items-center justify-center rounded bg-white text-black"
-                  onClick={subscribe}
-                >
-                  {status === "PENDING" ? (
-                    <Loader className="h-5 w-5 text-black" />
+
+                  <div className="mb-3 flex h-12 w-full items-center justify-between rounded border border-[#222] bg-[rgb(5,5,5)] px-4">
+                    {data.tier.name}
+                  </div>
+                  <div className="mb-3 flex h-12 w-full items-center justify-between rounded border border-[#222] bg-[rgb(5,5,5)]">
+                    <div className="flex items-center">
+                      <img
+                        src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"
+                        alt=""
+                        className="ml-2.5 h-7 w-7"
+                      />
+                      <div className="mt-1.5 ml-3 text-xl">
+                        {data.tier.price / 10 ** 6}
+                      </div>
+                    </div>
+                    <div className="mr-4 mt-1 text-lg">/ month</div>
+                  </div>
+                  {!publicKey ? (
+                    <Wallet
+                      style={{
+                        width: "100%",
+                        height: "3rem",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    />
                   ) : (
-                    "Subscribe"
+                    <button
+                      className="flex h-12 w-full items-center justify-center rounded bg-white text-black"
+                      onClick={subscribe}
+                    >
+                      {status === "PENDING" ? (
+                        <Loader className="h-5 w-5 text-black" />
+                      ) : (
+                        "Subscribe"
+                      )}
+                    </button>
                   )}
-                </button>
+                </>
+              ) : (
+                <div>
+                  <CheckCircleIcon className="h-14 w-14 text-white" />
+                </div>
               )}
               <div className="absolute bottom-10 text-center text-xs text-gray-400">
                 By confirming your subscription, you allow {data.app.name} to

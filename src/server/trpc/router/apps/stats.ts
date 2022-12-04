@@ -3,9 +3,10 @@ import { z } from "zod";
 
 import { getApp } from "@/hooks/getApp";
 import { TRPCError } from "@trpc/server";
-import { getTiers as getTiersQuery } from "@/hooks/getTiers";
+import { getTiers } from "@/hooks/getTiers";
+import { getSubscriptions } from "@/hooks/getSubscriptions";
 
-export const getTiers = publicProcedure
+export const stats = publicProcedure
   .input(
     z.object({
       session: z.string(),
@@ -42,5 +43,11 @@ export const getTiers = publicProcedure
         message: "Invalid session",
       });
 
-    return await getTiersQuery(app);
+    const tiers = await getTiers(app);
+    const subscriptions = await getSubscriptions(app);
+
+    return {
+      tiers,
+      subscriptions,
+    };
   });

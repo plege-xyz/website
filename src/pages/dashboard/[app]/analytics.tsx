@@ -11,8 +11,6 @@ const App = () => {
   const app = router.query.app as string;
   const { data, mutate } = trpc.apps.get.useMutation();
 
-  console.log(data);
-
   useEffect(() => {
     if (app) {
       const session = getCookie("session") as string;

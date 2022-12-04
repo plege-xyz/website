@@ -12,10 +12,14 @@ const Header = ({ url }: { url: string }) => {
       name: "Tiers",
       href: "/dashboard/[app]/tiers",
     },
-    {
-      name: "Settings",
-      href: "/dashboard/[app]/settings",
-    },
+    // {
+    //   name: "Feed",
+    //   href: "/dashboard/[app]/feed",
+    // },
+    // {
+    //   name: "Settings",
+    //   href: "/dashboard/[app]/settings",
+    // },
   ];
 
   const router = useRouter();

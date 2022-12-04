@@ -1,12 +1,10 @@
 import CreateTier from "@/components/dashboard/app/tiers/CreateTier";
 import CreateTierModal from "@/components/dashboard/app/tiers/CreateTierModal";
-import Tier from "@/components/dashboard/app/tiers/Tier";
 import Layout from "@/components/dashboard/Layout";
 import Loader from "@/components/Loader";
 import { overpass } from "@/utils/fonts";
 import { trpc } from "@/utils/trpc";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
-import { BN } from "@project-serum/anchor";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -68,7 +66,7 @@ const Tiers = () => {
               <div className="flex flex-col pb-10">
                 <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow ring-1 ring-[#333] ring-opacity-5 md:rounded-lg">
+                    <div className="overflow-hidden rounded-lg shadow ring-1 ring-[#333] ring-opacity-5">
                       <table
                         className={`min-w-full divide-y divide-[#222] ${overpass}`}
                       >
