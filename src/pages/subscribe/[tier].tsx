@@ -87,7 +87,7 @@ const Subscribe = () => {
       await confirmTransaction(transaction, sendTransaction);
       setStatus("SUCCESS");
     } catch (err) {
-      // setStatus(undefined);
+      setStatus(undefined);
       toast.error("Something went wrong");
     }
   };
