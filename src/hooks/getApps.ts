@@ -23,5 +23,7 @@ export const getApps = async (publicKey: PublicKey) => {
     apps.push({ publicKey: appPDA, data: app });
   }
 
+  console.log(apps[0]?.publicKey.toString());
+
   return apps;
 };

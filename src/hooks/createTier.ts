@@ -1,4 +1,4 @@
-import { programId, USDC_MINT } from "@/constants";
+import { programId } from "@/constants";
 import { BN } from "@project-serum/anchor";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import type { WalletAdapterProps } from "@solana/wallet-adapter-base";

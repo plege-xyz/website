@@ -58,9 +58,23 @@ const Subscribe = () => {
         programId
       );
 
+      const THREAD_PROGRAM = new PublicKey(
+        "3XXuUFfweXBwFgFfYaejLvZE4cGZiHgKiGfMtdxNzYmv"
+      );
+      const [thread] = findProgramAddressSync(
+        [
+          Buffer.from("thread"),
+          subscription.toBuffer(),
+          Buffer.from("subscriber_thread"),
+        ],
+        THREAD_PROGRAM
+      );
+
       const subscribeInstruction = await program.methods
         .createSubscription()
         .accounts({
+          threadProgram: THREAD_PROGRAM,
+          subscriptionThread: thread,
           app: data.tier.app,
           tier: tier,
           subscriber: publicKey,
@@ -69,24 +83,26 @@ const Subscribe = () => {
         })
         .instruction();
 
-      // const payInstruction = await program.methods
-      //   .completePayment()
-      //   .accounts({
-      //     app: data.tier.app,
-      //     tier: tier,
-      //     owner,
-      //     subscriberAta,
-      //     subscription,
-      //   })
-      //   .instruction();
+      const payInstruction = await program.methods
+        .completePayment()
+        .accounts({
+          app: data.tier.app,
+          tier: tier,
+          destination: owner,
+          subscriptionThread: thread,
+          subscriberAta,
+          subscription,
+        })
+        .instruction();
 
       const transaction = new Transaction()
         .add(subscribeInstruction)
-        // .add(payInstruction);
+        .add(payInstruction);
 
       await confirmTransaction(transaction, sendTransaction);
       setStatus("SUCCESS");
     } catch (err) {
+      console.log(err);
       setStatus(undefined);
       toast.error("Something went wrong");
     }
