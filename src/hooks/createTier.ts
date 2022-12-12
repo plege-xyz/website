@@ -33,7 +33,6 @@ export const createTier = async (
     })
     .accounts({
       app: app,
-      mint: USDC_MINT,
       tier: tierPDA,
     })
     .transaction();

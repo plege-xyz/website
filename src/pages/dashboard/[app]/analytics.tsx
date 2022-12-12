@@ -9,7 +9,7 @@ import { useEffect } from "react";
 const App = () => {
   const router = useRouter();
   const app = router.query.app as string;
-  const { data, mutate } = trpc.apps.get.useMutation();
+  const { data, mutate } = trpc.apps.stats.useMutation();
 
   useEffect(() => {
     if (app) {
@@ -20,6 +20,8 @@ const App = () => {
       });
     }
   }, [app]);
+
+  console.log(data?.subscriptions);
 
   return (
     <Layout>

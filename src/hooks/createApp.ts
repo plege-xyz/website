@@ -1,4 +1,4 @@
-import { connection, programId } from "@/constants";
+import { connection, programId, USDC_MINT } from "@/constants";
 import type { AnchorWallet } from "@solana/wallet-adapter-react";
 import { getProgram } from "./getProgram";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
@@ -32,6 +32,8 @@ export const createApp = async (
     .accounts({
       app,
       userMeta: userPDAPublicKey,
+      treasury: wallet.publicKey,
+      mint: USDC_MINT,
     })
     .transaction();
 
