@@ -69,20 +69,20 @@ const Subscribe = () => {
         })
         .instruction();
 
-      const payInstruction = await program.methods
-        .completePayment()
-        .accounts({
-          app: data.tier.app,
-          tier: tier,
-          owner,
-          subscriberAta,
-          subscription,
-        })
-        .instruction();
+      // const payInstruction = await program.methods
+      //   .completePayment()
+      //   .accounts({
+      //     app: data.tier.app,
+      //     tier: tier,
+      //     owner,
+      //     subscriberAta,
+      //     subscription,
+      //   })
+      //   .instruction();
 
       const transaction = new Transaction()
         .add(subscribeInstruction)
-        .add(payInstruction);
+        // .add(payInstruction);
 
       await confirmTransaction(transaction, sendTransaction);
       setStatus("SUCCESS");
