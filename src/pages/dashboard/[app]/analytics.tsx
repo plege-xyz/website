@@ -38,7 +38,7 @@ const App = () => {
 
   return (
     <Layout>
-      <div className="flex w-full justify-center">
+      <div className="flex h-full min-h-screen pb-40 w-full justify-center bg-black">
         <div className="mt-12 flex w-full max-w-screen-xl flex-col items-center justify-center">
           <div className="flex w-full justify-center gap-x-5">
             <div className="h-full w-2/3 rounded-lg border border-[#111] bg-[rgb(3,3,3)]">
