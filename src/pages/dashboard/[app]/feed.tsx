@@ -11,67 +11,74 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
+import plege from "@plege/subscriptions";
+import { PublicKey } from "@solana/web3.js";
+
 const Tiers = () => {
-  const { mutate, data } = trpc.apps.feed.useMutation();
+  const { data, mutate, isLoading } = trpc.apps.feed.useMutation();
 
   const router = useRouter();
   const app = router.query.app as string;
 
   useEffect(() => {
-    if (!data && app) {
+    if (app) {
       const session = getCookie("session") as string;
       mutate({
-        session,
         app,
+        session,
       });
     }
-  }, [data, app, mutate]);
+  }, [app, mutate]);
 
   console.log(data);
 
   return (
     <Layout>
       <div className="flex w-full justify-center">
-        {/* <div className="h-full w-full max-w-screen-xl">
-          {data && (
-            <div className="flex flex-col pb-10">
-              <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                  <div className="overflow-hidden rounded-lg shadow ring-1 ring-[#333] ring-opacity-5">
-                    <table
-                      className={`min-w-full divide-y divide-[#222] ${overpass}`}
-                    >
-                      <thead className="bg-[rgb(10,10,10)]">
-                        <tr>
-                          <th
-                            scope="col"
-                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-400 sm:pl-6"
-                          >
-                            Name
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-400"
-                          >
-                            Price
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-400"
-                          >
-                            Interval
-                          </th>
-                          <th
-                            scope="col"
-                            className="relative py-3.5 pl-3 text-sm text-gray-400"
-                          >
-                            Link
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-[#222] bg-[rgb(10,10,10)]">
-                        {data.subscriptions.map(
-                          ({ account: subscription }, key) => {
+        <div className="h-full w-full max-w-screen-xl">
+          {!data ? (
+            <div className="flex h-[calc(100vh-7.5rem)] w-full items-center justify-center">
+              <Loader className="-mt-24 h-10 w-10 text-white" />
+            </div>
+          ) : (
+            <div className="">
+              <div className="flex flex-col pb-10">
+                <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                    <div className="overflow-hidden rounded-lg shadow ring-1 ring-[#333] ring-opacity-5">
+                      <table
+                        className={`min-w-full divide-y divide-[#222] ${overpass}`}
+                      >
+                        <thead className="bg-[rgb(10,10,10)]">
+                          <tr>
+                            <th
+                              scope="col"
+                              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-400 sm:pl-6"
+                            >
+                              Name
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-400"
+                            >
+                              Price
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-400"
+                            >
+                              Interval
+                            </th>
+                            <th
+                              scope="col"
+                              className="relative py-3.5 pl-3 text-sm text-gray-400"
+                            >
+                              Link
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#222] bg-[rgb(10,10,10)]">
+                          {data.map(({ tier, publicKey }, key) => {
                             return (
                               <tr key={key}>
                                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-100 sm:pl-6">
@@ -95,16 +102,16 @@ const Tiers = () => {
                                 </td>
                               </tr>
                             );
-                          }
-                        )}
-                      </tbody>
-                    </table>
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           )}
-        </div> */}
+        </div>
       </div>
     </Layout>
   );

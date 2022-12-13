@@ -15,12 +15,4 @@ model Developer {
   pda           String?  @unique
   session       String   @unique
   sessionExpiry DateTime
-  apps          App[]
-}
-
-model App {
-  id         Int         @id @default(autoincrement())
-  publicId   String      @unique
-  name       String
-  developers Developer[]
 }
