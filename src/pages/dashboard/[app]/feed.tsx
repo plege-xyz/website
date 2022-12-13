@@ -41,7 +41,7 @@ const Tiers = () => {
               <Loader className="-mt-24 h-10 w-10 text-white" />
             </div>
           ) : (
-            <div className="">
+            <div className="mt-10">
               <div className="flex flex-col pb-10">
                 <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -55,55 +55,54 @@ const Tiers = () => {
                               scope="col"
                               className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-400 sm:pl-6"
                             >
-                              Name
+                              Subscriber
                             </th>
                             <th
                               scope="col"
                               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-400"
                             >
-                              Price
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-400"
-                            >
-                              Interval
+                              Tier
                             </th>
                             <th
                               scope="col"
                               className="relative py-3.5 pl-3 text-sm text-gray-400"
                             >
-                              Link
+                              Price
                             </th>
                           </tr>
                         </thead>
-                        {/* <tbody className="divide-y divide-[#222] bg-[rgb(10,10,10)]">
-                          {data.map(({ tier, publicKey }, key) => {
-                            return (
-                              <tr key={key}>
-                                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-100 sm:pl-6">
-                                  {tier.name}
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">
-                                  ${tier.price}
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">
-                                  monthly
-                                </td>
-                                <td className="relative flex justify-center whitespace-nowrap py-4 pl-3 text-right text-sm font-medium">
-                                  <a
-                                    href={`/subscribe/${publicKey}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="text-indigo-700 hover:text-indigo-900"
-                                  >
-                                    <ArrowTopRightOnSquareIcon className="h-5 w-5" />
-                                  </a>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody> */}
+                        <tbody className="divide-y divide-[#222] bg-[rgb(10,10,10)]">
+                          {data.subscriptions.map(
+                            ({ account: subscription }, key) => {
+                              return (
+                                <tr key={key}>
+                                  <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-100 sm:pl-6">
+                                    {subscription.subscriber.toString()}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">
+                                    {data.tiers.map(
+                                      ({ account: tier, publicKey }, key) => {
+                                        if (publicKey === subscription.tier) {
+                                          return tier.name;
+                                        }
+                                      }
+                                    )}
+                                  </td>
+                                  <td className="relative flex items-center justify-center py-4 text-sm text-gray-100">
+                                    $
+                                    {data.tiers.map(
+                                      ({ account: tier, publicKey }, key) => {
+                                        if (publicKey === subscription.tier) {
+                                          return tier.price / 10 ** 6;
+                                        }
+                                      }
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            }
+                          )}
+                        </tbody>
                       </table>
                     </div>
                   </div>

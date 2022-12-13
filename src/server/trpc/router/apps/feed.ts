@@ -7,7 +7,9 @@ import { getTiers } from "@/hooks/getTiers";
 import { getSubscriptions } from "@/hooks/getSubscriptions";
 
 import plege from "@plege/subscriptions";
-import { PublicKey } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
+import { getProgram } from "@/hooks/getProgram";
+import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
 
 export const feed = publicProcedure
   .input(
@@ -46,34 +48,24 @@ export const feed = publicProcedure
         message: "Invalid session",
       });
 
-    const tiers = await plege.app.get.tiers
-      .all(new PublicKey(appPDA))
-      .then((tiers) => {
-        return tiers.map((tier) => ({
-          publicKey: tier.publicKey.toBase58(),
-          name: tier.account.name,
-        }));
-      })
-      .catch((err) => {
-        console.log(err);
-        return [];
-      });
+    const program = getProgram(new NodeWallet(Keypair.generate()));
 
-    const subscriptions = await plege.app.get.subscriptions
-      .all(new PublicKey(appPDA))
-      .then((subscriptions) => {
-        return subscriptions.map((subscription) => ({
-          publicKey: subscription.publicKey.toBase58(),
-          tier: subscription.account.tier.toBase58(),
-          user: subscription.account.subscriber.toBase58(),
-          price: subscription.account.price,
-        }));
-      });
+    const tiers = await program.account.tier.all([
+      { memcmp: { offset: 8, bytes: app } },
+    ]);
 
-    console.log(tiers, subscriptions);
+    const subscriptions = await program.account.subscription.all([
+      { memcmp: { offset: 8, bytes: app } },
+    ]);
 
     return {
-      tiers,
+      tiers: tiers.map((tier) => ({
+        ...tier,
+        account: {
+          ...tier.account,
+          price: tier.account.price.toNumber(),
+        },
+      })),
       subscriptions,
     };
   });
