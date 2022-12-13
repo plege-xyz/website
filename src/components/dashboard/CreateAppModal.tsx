@@ -15,6 +15,7 @@ const CreateAppModal = ({
   closeCreateAppModal: () => void;
 }) => {
   const [name, setName] = useState<string>();
+  const [treasury, setTreasury] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
 
   const wallet = useAnchorWallet();
@@ -23,7 +24,7 @@ const CreateAppModal = ({
   const createAppHandler = async () => {
     if (!name) return toast.error("Enter a name for your app");
     setIsLoading(true);
-    await createApp(name, wallet!, sendTransaction)
+    await createApp(name, treasury!, wallet!, sendTransaction)
       .then(() => {
         setIsLoading(false);
         closeCreateAppModal();
@@ -40,6 +41,10 @@ const CreateAppModal = ({
     setName(e.target.value);
   };
 
+  const setTreasuryHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTreasury(e.target.value);
+  };
+
   return (
     <div className="absolute flex min-h-[calc(100vh-4rem)] w-full items-center justify-center bg-[rgba(0,0,0,0.7)]">
       <div className="w-full max-w-sm">
@@ -49,6 +54,12 @@ const CreateAppModal = ({
             placeholder="name"
             className={`mb-5 h-10 w-full rounded bg-[#222] px-3 outline-none ${overpass}`}
             onChange={setNameHandler}
+          />
+          <input
+            type="text"
+            placeholder="treasury (funds sent here)"
+            className={`mb-5 h-10 w-full rounded bg-[#222] px-3 outline-none ${overpass}`}
+            onChange={setTreasuryHandler}
           />
           {!wallet ? (
             <Wallet

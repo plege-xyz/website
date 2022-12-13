@@ -7,6 +7,7 @@ import { confirmTransaction } from "./confirmTransaction";
 
 export const createApp = async (
   name: string,
+  treasury: string,
   wallet: AnchorWallet,
   sendTransaction: WalletAdapterProps["sendTransaction"]
 ) => {
@@ -32,7 +33,7 @@ export const createApp = async (
     .accounts({
       app,
       userMeta: userPDAPublicKey,
-      treasury: wallet.publicKey,
+      treasury,
       mint: USDC_MINT,
     })
     .transaction();
