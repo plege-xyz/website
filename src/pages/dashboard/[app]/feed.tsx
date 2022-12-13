@@ -77,7 +77,7 @@ const Tiers = () => {
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-[#222] bg-[rgb(10,10,10)]">
+                        {/* <tbody className="divide-y divide-[#222] bg-[rgb(10,10,10)]">
                           {data.map(({ tier, publicKey }, key) => {
                             return (
                               <tr key={key}>
@@ -103,7 +103,7 @@ const Tiers = () => {
                               </tr>
                             );
                           })}
-                        </tbody>
+                        </tbody> */}
                       </table>
                     </div>
                   </div>
