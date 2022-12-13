@@ -10,12 +10,15 @@ import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pub
 import { createUser } from "@/hooks/createUser";
 import { confirmTransaction } from "@/hooks/confirmTransaction";
 import { programId } from "@/constants";
+import Loader from "@/components/Loader";
 
 const Dashboard = () => {
   const [pda, setPda] = useState<string | null>();
 
   const router = useRouter();
   const redirect = router.query.redirect as string;
+
+  const [loading, setLoading] = useState(false);
 
   const { mutate, data } = trpc.users.login.useMutation({
     onSuccess: (data) => {
@@ -50,9 +53,15 @@ const Dashboard = () => {
         programId
       );
 
-      createUser(wallet, sendTransaction).then(() => {
-        mutate({ publicKey: publicKey.toString(), pda: userPDA.toBase58() });
-      });
+      setLoading(true);
+
+      createUser(wallet, sendTransaction)
+        .then(() => {
+          mutate({ publicKey: publicKey.toString(), pda: userPDA.toBase58() });
+        })
+        .catch((err) => {
+          setLoading(false);
+        });
     }
   }, [pda, publicKey, wallet, mutate, sendTransaction]);
 
@@ -61,11 +70,13 @@ const Dashboard = () => {
       <div className="flex h-[calc(100vh-4rem)] w-full items-center justify-center">
         {pda !== null ? (
           <Wallet />
-        ) : (
+        ) : !loading ? (
           <div className={`${overpass} text-center leading-loose`}>
             We&apos;re creating an account for you, <br /> please approve the
             transaction
           </div>
+        ) : (
+          <Loader className="h-10 w-10 text-white" />
         )}
       </div>
     </Layout>
