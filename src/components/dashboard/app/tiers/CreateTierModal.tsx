@@ -55,7 +55,6 @@ const CreateTierModal = ({
     setPrice(Number(e.target.value));
   };
 
-  console.log(interval);
 
   return (
     <div className="absolute inset-0 flex min-h-[calc(100vh-7rem)] w-full items-center justify-center bg-[rgba(0,0,0,0.7)]">

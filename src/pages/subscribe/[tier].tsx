@@ -7,8 +7,8 @@ import { trpc } from "@/utils/trpc";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-import { programId, USDC_MINT } from "@/constants";
+import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { connection, programId, USDC_MINT } from "@/constants";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { confirmTransaction } from "@/hooks/confirmTransaction";
@@ -44,10 +44,13 @@ const Subscribe = () => {
         publicKey
       );
 
-      const owner = getAssociatedTokenAddressSync(
+      const destination = getAssociatedTokenAddressSync(
         new PublicKey(USDC_MINT),
-        new PublicKey(data.app.auth)
+        new PublicKey(data.app.treasury)
       );
+
+      console.log(data.app.treasury);
+      console.log(destination.toString());
 
       const [subscription] = findProgramAddressSync(
         [
@@ -88,7 +91,7 @@ const Subscribe = () => {
         .accounts({
           app: data.tier.app,
           tier: tier,
-          destination: owner,
+          destination,
           subscriptionThread: thread,
           subscriberAta,
           subscription,

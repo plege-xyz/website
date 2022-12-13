@@ -7,6 +7,7 @@ export const getTier = async (tier: string) => {
 
   const _tier = await program.account.tier.fetch(tier);
   const app = await program.account.app.fetch(_tier.app);
+  console.log(app.treasury.toString());
   return {
     tier: {
       ..._tier,
@@ -16,6 +17,7 @@ export const getTier = async (tier: string) => {
     app: {
       auth: app.auth.toString(),
       name: app.name,
+      treasury: app.treasury.toString(),
     },
   };
 };
