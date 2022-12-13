@@ -11,9 +11,6 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import plege from "@plege/subscriptions";
-import { PublicKey } from "@solana/web3.js";
-
 const Tiers = () => {
   const { data, mutate, isLoading } = trpc.apps.feed.useMutation();
 

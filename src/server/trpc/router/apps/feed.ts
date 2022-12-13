@@ -3,10 +3,7 @@ import { z } from "zod";
 
 import { getApp } from "@/hooks/getApp";
 import { TRPCError } from "@trpc/server";
-import { getTiers } from "@/hooks/getTiers";
-import { getSubscriptions } from "@/hooks/getSubscriptions";
 
-import plege from "@plege/subscriptions";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { getProgram } from "@/hooks/getProgram";
 import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
