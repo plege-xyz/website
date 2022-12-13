@@ -20,7 +20,7 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const { mutate, data } = trpc.users.login.useMutation({
+  const { mutate, data, isLoading } = trpc.users.login.useMutation({
     onSuccess: (data) => {
       const { pda } = data;
       if (!pda) setPda(null);
@@ -70,7 +70,7 @@ const Dashboard = () => {
       <div className="flex h-[calc(100vh-4rem)] w-full items-center justify-center">
         {pda !== null ? (
           <Wallet />
-        ) : !loading ? (
+        ) : !loading && !isLoading ? (
           <div className={`${overpass} text-center leading-loose`}>
             We&apos;re creating an account for you, <br /> please approve the
             transaction
