@@ -26,7 +26,7 @@ const Graph = () => {
           coming soon
         </div>
       </div>
-      <div className=" blur-sm">
+      <div className="w-full h-full blur-sm">
         <Bar
           options={{
             responsive: true,

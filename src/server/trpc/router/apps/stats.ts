@@ -5,6 +5,9 @@ import { getApp } from "@/hooks/getApp";
 import { TRPCError } from "@trpc/server";
 import { getTiers } from "@/hooks/getTiers";
 import { getSubscriptions } from "@/hooks/getSubscriptions";
+import { getProgram } from "@/hooks/getProgram";
+import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
+import { Keypair } from "@solana/web3.js";
 
 export const stats = publicProcedure
   .input(
@@ -43,11 +46,24 @@ export const stats = publicProcedure
         message: "Invalid session",
       });
 
-    const tiers = await getTiers(app);
-    const subscriptions = await getSubscriptions(app);
+    const program = getProgram(new NodeWallet(Keypair.generate()));
+
+    const tiers = await program.account.tier.all([
+      { memcmp: { offset: 8, bytes: app } },
+    ]);
+
+    const subscriptions = await program.account.subscription.all([
+      { memcmp: { offset: 8, bytes: app } },
+    ]);
 
     return {
-      tiers,
+      tiers: tiers.map((tier) => ({
+        ...tier,
+        account: {
+          ...tier.account,
+          price: tier.account.price.toNumber(),
+        },
+      })),
       subscriptions,
     };
   });

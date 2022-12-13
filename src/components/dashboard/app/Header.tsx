@@ -4,10 +4,10 @@ import { useRouter } from "next/router";
 
 const Header = ({ url }: { url: string }) => {
   const _nav = [
-    // {
-    //   name: "Analytics",
-    //   href: "/dashboard/[app]/analytics",
-    // },
+    {
+      name: "Analytics",
+      href: "/dashboard/[app]/analytics",
+    },
     {
       name: "Tiers",
       href: "/dashboard/[app]/tiers",

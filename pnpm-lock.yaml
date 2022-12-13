@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@heroicons/react': ^2.0.13
   '@next/font': ^13.0.3
-  '@plege/subscriptions': ^0.0.1
+  '@plege/subscriptions': 0.0.5
   '@prisma/client': ^4.5.0
   '@project-serum/anchor': ^0.25.0
   '@solana/spl-token': ^0.3.6
@@ -52,7 +52,7 @@ specifiers:
 dependencies:
   '@heroicons/react': 2.0.13_react@18.2.0
   '@next/font': 13.0.3
-  '@plege/subscriptions': 0.0.1
+  '@plege/subscriptions': 0.0.5
   '@prisma/client': 4.6.1_prisma@4.6.1
   '@project-serum/anchor': 0.25.0
   '@solana/spl-token': 0.3.6_@solana+web3.js@1.66.2
@@ -1918,8 +1918,8 @@ packages:
     resolution: {integrity: sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==}
     dev: false
 
-  /@plege/subscriptions/0.0.1:
-    resolution: {integrity: sha512-yA8noWtMu2rK6mYRF8ap4xhji2QF14I3cKjuG9P5F++DIgUT1Vhm/L2j2ZxHNQTF/ByMn4VCUCEq9xNYRH8eCQ==}
+  /@plege/subscriptions/0.0.5:
+    resolution: {integrity: sha512-vYJtxwqTIy1Vl1yMXFrvr1EEs218I+LoopyRfk0LCPpBbEVsbeV2M7iq3P7AjOmUWs7X9dY7L5AvIBqGYBoT2A==}
     dependencies:
       '@project-serum/anchor': 0.25.0
     transitivePeerDependencies:
