@@ -38,7 +38,7 @@ const App = () => {
 
   return (
     <Layout>
-      <div className="flex h-full min-h-screen pb-40 w-full justify-center bg-black">
+      <div className="flex h-full min-h-screen w-full justify-center bg-black pb-40">
         <div className="mt-12 flex w-full max-w-screen-xl flex-col items-center justify-center">
           <div className="flex w-full justify-center gap-x-5">
             <div className="h-full w-2/3 rounded-lg border border-[#111] bg-[rgb(3,3,3)]">
@@ -74,7 +74,7 @@ const App = () => {
           <div className={`${overpass} w-full px-24 py-5 text-left text-3xl`}>
             Subscriptions By Tier
           </div>
-          <div className="grid h-10 w-full grid-cols-4 px-20">
+          <div className="grid h-10 w-full grid-cols-4 gap-x-5 px-20">
             {data &&
               data.tiers.map((tier, key) => {
                 const totalSubscriptions = data.subscriptions.filter(
