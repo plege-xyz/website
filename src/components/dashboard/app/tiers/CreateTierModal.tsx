@@ -18,6 +18,7 @@ const CreateTierModal = ({
 }) => {
   const [name, setName] = useState<string>();
   const [price, setPrice] = useState<number>();
+  const [interval, setInterval] = useState<"month" | "year">("month");
   const [isLoading, setIsLoading] = useState(false);
 
   const wallet = useAnchorWallet();
@@ -33,7 +34,7 @@ const CreateTierModal = ({
     if (!wallet) return toast.error("Connect your wallet");
 
     setIsLoading(true);
-    await createTier(app, name, price, wallet, sendTransaction)
+    await createTier(app, name, price, interval, wallet, sendTransaction)
       .then(() => {
         setIsLoading(false);
         closeCreateTierModal();
@@ -54,6 +55,8 @@ const CreateTierModal = ({
     setPrice(Number(e.target.value));
   };
 
+  console.log(interval);
+
   return (
     <div className="absolute inset-0 flex min-h-[calc(100vh-7rem)] w-full items-center justify-center bg-[rgba(0,0,0,0.7)]">
       <div className="w-full max-w-sm">
@@ -70,6 +73,18 @@ const CreateTierModal = ({
             className={`mb-5 h-10 w-full rounded bg-[#222] px-3 outline-none ${overpass}`}
             onChange={setPriceHandler}
           />
+
+          <div className={`${overpass} -mt-2 mb-3 ml-1 text-xs`}>interval</div>
+          <select
+            name=""
+            id=""
+            className={`mb-5 -mt-1.5 h-10 w-full rounded bg-[#222] ${overpass} pl-3 outline-none`}
+            onChange={(e) => setInterval(e.target.value as "month" | "year")}
+          >
+            <option value="month">Month</option>
+            <option value="year">Year</option>
+          </select>
+
           {!wallet ? (
             <Wallet
               style={{

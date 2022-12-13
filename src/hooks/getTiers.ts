@@ -23,9 +23,14 @@ export const getTiers = async (app: string) => {
     );
 
     const tier = await program.account.tier.fetch(tierPDA);
+
     tiers.push({
       publicKey: tierPDA,
-      tier: { ...tier, price: tier.price.toNumber() / 10 ** 6 },
+      tier: {
+        ...tier,
+        price: tier.price.toNumber() / 10 ** 6,
+        interval: tier.interval,
+      },
     });
   }
 

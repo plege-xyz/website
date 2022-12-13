@@ -11,6 +11,7 @@ export const createTier = async (
   app: string,
   name: string,
   price: number,
+  interval: "month" | "year",
   wallet: AnchorWallet,
   sendTransaction: WalletAdapterProps["sendTransaction"]
 ) => {
@@ -28,9 +29,18 @@ export const createTier = async (
 
   const transaction = await program.methods
 
-    .createTier(appPDA.numTiers + 1, name, new BN(price * 10 ** 6), {
-      month: {},
-    })
+    .createTier(
+      appPDA.numTiers + 1,
+      name,
+      new BN(price * 10 ** 6),
+      interval === "month"
+        ? {
+            month: {},
+          }
+        : {
+            year: {},
+          }
+    )
     .accounts({
       app: app,
       tier: tierPDA,

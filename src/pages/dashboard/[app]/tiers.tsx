@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import CreateTier from "@/components/dashboard/app/tiers/CreateTier";
 import CreateTierModal from "@/components/dashboard/app/tiers/CreateTierModal";
 import Layout from "@/components/dashboard/Layout";
@@ -40,6 +41,8 @@ const Tiers = () => {
   const closeCreateTierModal = () => {
     setIsTierCreateModalOpen(false);
   };
+
+  console.log(data);
 
   return (
     <Layout>
@@ -109,7 +112,10 @@ const Tiers = () => {
                                   ${tier.price}
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">
-                                  monthly
+                                  {/* @ts-ignore */}
+                                  {tier.interval.month !== undefined
+                                    ? "Monthly"
+                                    : "Yearly"}
                                 </td>
                                 <td className="relative flex justify-center whitespace-nowrap py-4 pl-3 text-right text-sm font-medium">
                                   <a
