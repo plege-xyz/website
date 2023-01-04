@@ -1,108 +1,129 @@
-import CreateTier from "@/components/dashboard/app/tiers/CreateTier";
-import CreateTierModal from "@/components/dashboard/app/tiers/CreateTierModal";
-import Tier from "@/components/dashboard/app/tiers/Tier";
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Layout from "@/components/dashboard/Layout";
 import Loader from "@/components/Loader";
 import { overpass } from "@/utils/fonts";
-import { trpc } from "@/utils/trpc";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
-import { BN } from "@project-serum/anchor";
-import { getCookie } from "cookies-next";
+import { Plege } from "@/utils/plege";
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
+
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import type { Subscription, Tier } from "../../../../../plege_xyz/sdk";
 
-const Tiers = () => {
-  const { data, mutate, isLoading } = trpc.apps.feed.useMutation();
+const Feed = () => {
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>();
+  const [tiers, setTiers] = useState<Tier[]>();
 
   const router = useRouter();
   const app = router.query.app as string;
 
-  useEffect(() => {
-    if (app) {
-      const session = getCookie("session") as string;
-      mutate({
-        app,
-        session,
-      });
-    }
-  }, [app, mutate]);
+  const wallet = useAnchorWallet();
 
-  console.log(data);
+  useEffect(() => {
+    if (app && wallet) {
+      const getSubscriptions = async () => {
+        setSubscriptions(
+          await Plege(wallet).subscription.all({
+            app,
+          })
+        );
+      };
+
+      const getTiers = async () => {
+        setTiers(
+          await Plege(wallet).tier.all({
+            app,
+          })
+        );
+      };
+
+      getSubscriptions();
+      getTiers();
+    }
+  }, [app, wallet]);
+
+  console.log(subscriptions);
+
+  const getTierName = (tier: string) => {
+    return tiers!.find((_tier) => {
+      return tier === _tier.publicKey;
+    })!.name;
+  };
+
+  function formatDate(date: Date): string {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const day = date.getDate();
+    const monthIndex = date.getMonth();
+    const year = date.getFullYear();
+
+    return `${day} ${months[monthIndex]}, ${year}`;
+  }
 
   return (
     <Layout>
       <div className="flex w-full justify-center">
         <div className="h-full w-full max-w-screen-xl">
-          {!data ? (
+          {!subscriptions || !tiers ? (
             <div className="flex h-[calc(100vh-7.5rem)] w-full items-center justify-center">
               <Loader className="-mt-24 h-10 w-10 text-white" />
             </div>
           ) : (
-            <div className="mt-10">
-              <div className="flex flex-col pb-10">
-                <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                  <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                    <div className="overflow-hidden rounded-lg shadow ring-1 ring-[#333] ring-opacity-5">
-                      <table
-                        className={`min-w-full divide-y divide-[#222] ${overpass}`}
-                      >
-                        <thead className="bg-[rgb(10,10,10)]">
-                          <tr>
-                            <th
-                              scope="col"
-                              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-400 sm:pl-6"
-                            >
-                              Subscriber
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-400"
-                            >
-                              Tier
-                            </th>
-                            <th
-                              scope="col"
-                              className="relative py-3.5 pl-3 text-sm text-gray-400"
-                            >
-                              Price
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#222] bg-[rgb(10,10,10)]">
-                          {data.subscriptions.map(
-                            ({ account: subscription }, key) => {
-                              return (
-                                <tr key={key}>
-                                  <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-100 sm:pl-6">
-                                    {subscription.subscriber.toString()}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">
-                                    {data.tiers.map(
-                                      ({ account: tier, publicKey }, key) => {
-                                        if (publicKey === subscription.tier) {
-                                          return tier.name;
-                                        }
-                                      }
-                                    )}
-                                  </td>
-                                  <td className="relative flex items-center justify-center py-4 text-sm text-gray-100">
-                                    $
-                                    {data.tiers.map(
-                                      ({ account: tier, publicKey }, key) => {
-                                        if (publicKey === subscription.tier) {
-                                          return tier.price / 10 ** 6;
-                                        }
-                                      }
-                                    )}
-                                  </td>
-                                </tr>
-                              );
-                            }
-                          )}
-                        </tbody>
-                      </table>
+            <div className="flex w-full justify-center">
+              <div className="mt-14 h-10 w-full max-w-screen-xl">
+                <div
+                  className={`grid w-full divide-y-2 divide-[#222] ${
+                    subscriptions.length > 0 ? "rounded-lg" : "rounded-t-lg"
+                  } border-2 border-[#222] bg-[rgb(5,5,5)] ${overpass}`}
+                >
+                  <div className="flex h-14 w-full items-center justify-between px-8">
+                    <div className="flex">
+                      <div className="w-[28.8rem]">subscriber</div>
+                      <div className="">tier</div>
+                    </div>
+                    <div className="flex">
+                      <div className="mr-[5.5rem]">start</div>
+                      <div className="mr-3">status</div>
                     </div>
                   </div>
+                  {subscriptions.map((subscription, key) => (
+                    <div
+                      className="flex h-[4.5rem] w-full items-center justify-between px-8 pl-8"
+                      key={key}
+                    >
+                      <div className="flex">
+                        <div className="leading-0 w-[28.8rem]">
+                          {subscription.subscriber}
+                        </div>
+                        <div className="text-gray-400">
+                          {getTierName(subscription.tier)}
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="mr-10">
+                          {formatDate(subscription.start)}
+                        </div>
+                        <div className="flex h-8 items-center justify-center rounded-full bg-white px-4 text-sm text-black">
+                          <div className="pt-1">
+                            {subscription.payPeriodExpiration > new Date()
+                              ? "ACTIVE"
+                              : "EXPIRED"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -113,4 +134,4 @@ const Tiers = () => {
   );
 };
 
-export default Tiers;
+export default Feed;

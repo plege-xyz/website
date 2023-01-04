@@ -8,9 +8,9 @@ const CreateTier = ({
   return (
     <button
       onClick={() => setIsTierCreateModalOpen(true)}
-      className={`my-10 h-10 rounded bg-white px-5 text-black ${overpass} pt-0.5`}
+      className={`h-10 rounded bg-white px-5 text-sm text-black ${overpass} pt-0.5`}
     >
-      Create
+      CREATE
     </button>
   );
 };
