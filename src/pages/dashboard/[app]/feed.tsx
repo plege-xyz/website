@@ -7,7 +7,7 @@ import { useAnchorWallet } from "@solana/wallet-adapter-react";
 
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import type { Subscription, Tier } from "../../../../../plege_xyz/sdk";
+import type { Subscription, Tier } from "../../plege";
 
 const Feed = () => {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>();

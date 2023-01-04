@@ -1,40 +1,11 @@
-import Graph from "@/components/dashboard/app/Graph";
 import Layout from "@/components/dashboard/Layout";
 import { tiers } from "@/server/trpc/router/tiers";
 import { overpass, space, tt } from "@/utils/fonts";
-import { trpc } from "@/utils/trpc";
-import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const App = () => {
   const router = useRouter();
   const app = router.query.app as string;
-  const { data, mutate } = trpc.apps.stats.useMutation();
-
-  useEffect(() => {
-    if (app) {
-      const session = getCookie("session") as string;
-      mutate({
-        session,
-        app,
-      });
-    }
-  }, [app]);
-
-  let revenue = 0;
-
-  if (data) {
-    data.subscriptions.map((sub) => {
-      const tier = data.tiers.find(
-        (tier) => tier.publicKey === sub.account.tier
-      );
-
-      if (tier) {
-        revenue += tier.account.price / 10 ** 6;
-      }
-    });
-  }
 
   const stats: {
     label: string;
@@ -45,12 +16,12 @@ const App = () => {
       value: "$1,234",
     },
     {
-      label: "SUBSCRIBERS",
-      value: "425",
+      label: "ARR",
+      value: "$12,234",
     },
     {
-      label: "REVENUE (ALL TIME)",
-      value: "$12,234",
+      label: "SUBSCRIBERS",
+      value: "425",
     },
     {
       label: "CHURN",

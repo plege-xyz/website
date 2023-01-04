@@ -10,7 +10,7 @@ import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import type { Tier } from "../../../../../plege_xyz/sdk";
+import type { Tier } from "../../plege";
 
 const Tiers = () => {
   const [isTierCreateModalOpen, setIsTierCreateModalOpen] = useState(false);
