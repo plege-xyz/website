@@ -21,11 +21,13 @@ const Feed = () => {
   useEffect(() => {
     if (app && wallet) {
       const getSubscriptions = async () => {
-        setSubscriptions(
-          await Plege(wallet).subscription.all({
-            app,
-          })
-        );
+        const subscriptions = await Plege(wallet).subscription.all({
+          app,
+        });
+        subscriptions.sort((a, b) => {
+          return b.start.getTime() - a.start.getTime();
+        });
+        setSubscriptions(subscriptions);
       };
 
       const getTiers = async () => {

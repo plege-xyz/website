@@ -4,6 +4,7 @@ import Header from "./Header";
 import { default as Nav } from "./app/Header";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import Wallet from "../wallet";
+import { overpass } from "@/utils/fonts";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -24,7 +25,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         router.pathname !== "/dashboard" && <Nav url={url} />}
       <div className="flex w-full flex-grow flex-col">
         {wallet ? (
-          children
+          <div className="flex-grow flex flex-col">
+            <div className="hidden lg:block">{children}</div>
+            <div
+              className={`flex-grow flex h-full items-center justify-center text-xl lg:hidden ${overpass}`}
+            >
+              VIEW ON DESKTOP
+            </div>
+          </div>
         ) : (
           <div className="flex h-full flex-grow items-center justify-center">
             <Wallet />

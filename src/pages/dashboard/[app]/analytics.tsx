@@ -45,12 +45,12 @@ const App = () => {
               <Graph />
             </div>
             <div className={`grid w-60 grid-cols-1 gap-y-5 ${overpass}`}>
-              <div className="flex h-36 w-full flex-col justify-between rounded border border-[#111] bg-[rgb(3,3,3)] p-5 text-lg text-gray-300">
-                Subscribers
+              <div className="flex h-36 w-full flex-col justify-between rounded-lg border border-[#111] bg-[rgb(3,3,3)] p-6 text-xl text-gray-200">
+                SUBSCRIBERS
                 {data && data.subscriptions ? (
                   <div className="text-5xl">{data.subscriptions.length}</div>
                 ) : (
-                  <div className="h-12 w-44 animate-pulse rounded bg-[#111]"></div>
+                  <div className="h-10 w-44 animate-pulse rounded bg-[#111]"></div>
                 )}
               </div>
               <div className="flex h-36 w-full flex-col justify-between rounded border border-[#111] bg-[rgb(3,3,3)] p-5 text-lg text-gray-300">
