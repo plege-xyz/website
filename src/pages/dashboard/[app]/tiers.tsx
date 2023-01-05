@@ -3,52 +3,51 @@ import CreateTier from "@/components/dashboard/app/tiers/CreateTier";
 import CreateTierModal from "@/components/dashboard/app/tiers/CreateTierModal";
 import Layout from "@/components/dashboard/Layout";
 import Loader from "@/components/Loader";
-import { overpass } from "@/utils/fonts";
-import { trpc } from "@/utils/trpc";
+import { overpass, tt } from "@/utils/fonts";
+import { Plege } from "@/utils/plege";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import type { Tier } from "plege";
 
 const Tiers = () => {
   const [isTierCreateModalOpen, setIsTierCreateModalOpen] = useState(false);
-
-  const { isLoading, data, mutate } = trpc.apps.getTiers.useMutation({
-    retry: false,
-  });
+  const [tiers, setTiers] = useState<Tier[]>();
 
   const router = useRouter();
   const app = router.query.app as string;
 
+  const wallet = useAnchorWallet();
+
   useEffect(() => {
-    if (!data && app) {
-      const session = getCookie("session") as string;
-      mutate({
-        app,
-        session,
-      });
+    if (!tiers && wallet) {
+      const getTiers = async () => {
+        setTiers(
+          await Plege(wallet).tier.all({
+            app,
+          })
+        );
+      };
+
+      getTiers();
     }
-  }, [data, app]);
+  }, [tiers, app, wallet]);
 
   const refresh = () => {
-    const session = getCookie("session") as string;
-    mutate({
-      app,
-      session,
-    });
+    setTiers(undefined);
   };
 
   const closeCreateTierModal = () => {
     setIsTierCreateModalOpen(false);
   };
 
-  console.log(data);
-
   return (
     <Layout>
       <div className="flex w-full justify-center">
         <div className="h-full w-full max-w-screen-xl">
-          {!data ? (
+          {!tiers ? (
             <div className="flex h-[calc(100vh-7.5rem)] w-full items-center justify-center">
               <Loader className="-mt-24 h-10 w-10 text-white" />
             </div>
@@ -60,80 +59,60 @@ const Tiers = () => {
                   closeCreateTierModal={closeCreateTierModal}
                 />
               )}
-              <div className="flex items-center justify-between">
-                <div className={`${overpass} mt-1 ml-2 text-3xl`}>Tiers</div>
+              <div className="my-8 flex items-center justify-between">
+                <div className={`${tt} mt-1 ml-2 text-3xl`}>TIERS</div>
                 <CreateTier
                   setIsTierCreateModalOpen={setIsTierCreateModalOpen}
                 />
               </div>
-              <div className="flex flex-col pb-10">
-                <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                  <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                    <div className="overflow-hidden rounded-lg shadow ring-1 ring-[#333] ring-opacity-5">
-                      <table
-                        className={`min-w-full divide-y divide-[#222] ${overpass}`}
-                      >
-                        <thead className="bg-[rgb(10,10,10)]">
-                          <tr>
-                            <th
-                              scope="col"
-                              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-400 sm:pl-6"
-                            >
-                              Name
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-400"
-                            >
-                              Price
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-400"
-                            >
-                              Interval
-                            </th>
-                            <th
-                              scope="col"
-                              className="relative py-3.5 pl-3 text-sm text-gray-400"
-                            >
-                              Link
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#222] bg-[rgb(10,10,10)]">
-                          {data.map(({ tier, publicKey }, key) => {
-                            return (
-                              <tr key={key}>
-                                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-100 sm:pl-6">
-                                  {tier.name}
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">
-                                  ${tier.price}
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">
-                                  {/* @ts-ignore */}
-                                  {tier.interval.month !== undefined
-                                    ? "Monthly"
-                                    : "Yearly"}
-                                </td>
-                                <td className="relative flex justify-center whitespace-nowrap py-4 pl-3 text-right text-sm font-medium">
-                                  <a
-                                    href={`/subscribe/${publicKey}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="text-indigo-700 hover:text-indigo-900"
-                                  >
-                                    <ArrowTopRightOnSquareIcon className="h-5 w-5" />
-                                  </a>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
+              <div>
+                <div
+                  className={`grid w-full divide-y-2 divide-[#222] ${
+                    tiers.length > 0 ? "rounded-lg" : "rounded-t-lg"
+                  } border-2 border-[#222] bg-[rgb(5,5,5)] ${overpass}`}
+                >
+                  <div className="flex h-14 w-full items-center justify-between px-8">
+                    <div className="flex">
+                      <div className="w-[28.8rem]">name</div>
+                    </div>
+                    <div className="flex">
+                      <div className="mr-[3.3rem]">price</div>
+                      <div className="mr-10">interval</div>
+                      <div className="mr-3">link</div>
                     </div>
                   </div>
+                  {tiers.map((tier, key) => (
+                    <div
+                      className="flex h-[4.5rem] w-full items-center justify-between px-8 pl-8"
+                      key={key}
+                    >
+                      <div className="flex">
+                        <div className="leading-0 w-[28.8rem]">{tier.name}</div>
+                        <div className="text-gray-400">
+                          {/* {getTierName(subscription.tier)} */}
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="mr-10 flex w-14 justify-center">
+                          ${tier.price}
+                        </div>
+                        <div className="mr-[2rem] flex w-24 justify-center">
+                          <div className="flex h-8 items-center justify-center rounded-full bg-white px-4 pt-0.5 text-black">
+                            {tier.interval}
+                          </div>
+                        </div>
+                        <a
+                          href={`/subscribe/${tier.publicKey}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <button className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-white p-2.5 text-sm text-black">
+                            <ArrowTopRightOnSquareIcon />
+                          </button>
+                        </a>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

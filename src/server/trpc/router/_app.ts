@@ -1,13 +1,8 @@
 import { router } from "../trpc";
-
-import { users } from "./users";
-import { apps } from "./apps";
-import { tiers } from "./tiers";
+import { webhooks } from "./webhooks";
 
 export const appRouter = router({
-  users,
-  apps,
-  tiers,
+  webhooks,
 });
 
 // export type definition of API

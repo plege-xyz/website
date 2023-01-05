@@ -16,10 +16,10 @@ const Header = ({ url }: { url: string }) => {
       name: "Feed",
       href: "/dashboard/[app]/feed",
     },
-    // {
-    //   name: "Settings",
-    //   href: "/dashboard/[app]/settings",
-    // },
+    {
+      name: "Developer",
+      href: "/dashboard/[app]/developer",
+    },
   ];
 
   const router = useRouter();

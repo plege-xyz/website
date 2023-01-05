@@ -3,11 +3,10 @@ import { useState } from "react";
 import { overpass } from "@/utils/fonts";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import Wallet from "../../../wallet";
-import { createApp } from "@/hooks/createApp";
 import toast from "react-hot-toast";
 import Loader from "../../../Loader";
-import { createTier } from "@/hooks/createTier";
 import { useRouter } from "next/router";
+import { Plege } from "@/utils/plege";
 
 const CreateTierModal = ({
   refresh,
@@ -18,11 +17,10 @@ const CreateTierModal = ({
 }) => {
   const [name, setName] = useState<string>();
   const [price, setPrice] = useState<number>();
-  const [interval, setInterval] = useState<"month" | "year">("month");
+  const [interval, setInterval] = useState<"monthly" | "yearly">("monthly");
   const [isLoading, setIsLoading] = useState(false);
 
   const wallet = useAnchorWallet();
-  const { sendTransaction } = useWallet();
 
   const router = useRouter();
   const app = router.query.app as string;
@@ -34,7 +32,14 @@ const CreateTierModal = ({
     if (!wallet) return toast.error("Connect your wallet");
 
     setIsLoading(true);
-    await createTier(app, name, price, interval, wallet, sendTransaction)
+
+    await Plege(wallet)
+      .tier.create({
+        app,
+        name,
+        price,
+        interval: interval === "monthly" ? "MONTHLY" : "YEARLY",
+      })
       .then(() => {
         setIsLoading(false);
         closeCreateTierModal();
@@ -55,7 +60,6 @@ const CreateTierModal = ({
     setPrice(Number(e.target.value));
   };
 
-
   return (
     <div className="absolute inset-0 flex min-h-[calc(100vh-7rem)] w-full items-center justify-center bg-[rgba(0,0,0,0.7)]">
       <div className="w-full max-w-sm">
@@ -63,25 +67,25 @@ const CreateTierModal = ({
           <input
             type="text"
             placeholder="name"
-            className={`mb-5 h-10 w-full rounded bg-[#222] px-3 outline-none ${overpass}`}
+            className={`mb-4 h-10 w-full rounded bg-[#222] px-3 outline-none ${overpass}`}
             onChange={setNameHandler}
           />
           <input
             type="number"
             placeholder="price (USDC)"
-            className={`mb-5 h-10 w-full rounded bg-[#222] px-3 outline-none ${overpass}`}
+            className={`mb-4 h-10 w-full rounded bg-[#222] px-3 outline-none ${overpass}`}
             onChange={setPriceHandler}
           />
-
-          <div className={`${overpass} -mt-2 mb-3 ml-1 text-xs`}>interval</div>
           <select
             name=""
             id=""
-            className={`mb-5 -mt-1.5 h-10 w-full rounded bg-[#222] ${overpass} pl-3 outline-none`}
-            onChange={(e) => setInterval(e.target.value as "month" | "year")}
+            className={`mb-5 h-10 w-full rounded bg-[#222] ${overpass} pl-3 outline-none`}
+            onChange={(e) =>
+              setInterval(e.target.value as "monthly" | "yearly")
+            }
           >
-            <option value="month">Month</option>
-            <option value="year">Year</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
           </select>
 
           {!wallet ? (
