@@ -10,7 +10,7 @@ import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import type { Tier } from "../../plege";
+import type { Tier } from "plege";
 
 const Tiers = () => {
   const [isTierCreateModalOpen, setIsTierCreateModalOpen] = useState(false);
@@ -101,9 +101,15 @@ const Tiers = () => {
                             {tier.interval}
                           </div>
                         </div>
-                        <button className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-white p-2.5 text-sm text-black">
-                          <ArrowTopRightOnSquareIcon />
-                        </button>
+                        <a
+                          href={`/subscribe/${tier.publicKey}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <button className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-white p-2.5 text-sm text-black">
+                            <ArrowTopRightOnSquareIcon />
+                          </button>
+                        </a>
                       </div>
                     </div>
                   ))}

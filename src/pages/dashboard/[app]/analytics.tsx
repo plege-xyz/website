@@ -1,6 +1,5 @@
 import Layout from "@/components/dashboard/Layout";
-import { tiers } from "@/server/trpc/router/tiers";
-import { overpass, space, tt } from "@/utils/fonts";
+import { overpass, tt } from "@/utils/fonts";
 import { useRouter } from "next/router";
 
 const App = () => {

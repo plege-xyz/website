@@ -7,7 +7,7 @@ import { useAnchorWallet } from "@solana/wallet-adapter-react";
 
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import type { Subscription, Tier } from "../../plege";
+import type { Subscription, Tier } from "plege";
 
 const Feed = () => {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>();
@@ -72,6 +72,8 @@ const Feed = () => {
 
     return `${day} ${months[monthIndex]}, ${year}`;
   }
+
+  console.log(subscriptions);
 
   return (
     <Layout>

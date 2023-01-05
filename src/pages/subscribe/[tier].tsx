@@ -1,108 +1,56 @@
 /* eslint-disable @next/next/no-img-element */
 import Loader from "@/components/Loader";
 import Wallet from "@/components/wallet";
-import { getProgram } from "@/hooks/getProgram";
-import { overpass, space, space_bold, tt } from "@/utils/fonts";
-import { trpc } from "@/utils/trpc";
-import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
+import { overpass, tt } from "@/utils/fonts";
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
-import { connection, programId, USDC_MINT } from "@/constants";
-import { PublicKey, Transaction } from "@solana/web3.js";
-import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
-import { confirmTransaction } from "@/hooks/confirmTransaction";
+import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import { Plege } from "@/utils/plege";
+import { FakeWallet } from "plege";
+import type { Tier, App } from "plege";
 
 const Subscribe = () => {
+  const [data, setData] = useState<{ tier: Tier; app: App }>();
+
   const router = useRouter();
   const tier = router.query.tier as string;
 
-  const { mutate, data, isLoading, error } = trpc.tiers.get.useMutation();
-  const { publicKey, sendTransaction } = useWallet();
   const wallet = useAnchorWallet();
 
   const [status, setStatus] = useState<"PENDING" | "SUCCESS">();
 
   useEffect(() => {
     if (tier) {
-      mutate({
-        tier,
-      });
+      const getTier = async () => {
+        const _tier = await Plege(FakeWallet).tier.get({
+          publicKey: new PublicKey(tier),
+        });
+
+        const app = await Plege(FakeWallet).app.get({
+          publicKey: new PublicKey(_tier.app),
+        });
+
+        setData({
+          app,
+          tier: _tier,
+        });
+      };
+
+      getTier();
     }
-  }, [tier, mutate]);
+  }, [tier]);
 
   const subscribe = async () => {
     try {
-      if (!wallet || !publicKey || !data) return;
+      if (!wallet || !data) return;
       setStatus("PENDING");
-      const program = getProgram(wallet);
 
-      const subscriberAta = getAssociatedTokenAddressSync(
-        new PublicKey(USDC_MINT),
-        publicKey
-      );
-
-      const destination = getAssociatedTokenAddressSync(
-        new PublicKey(USDC_MINT),
-        new PublicKey(data.app.treasury)
-      );
-
-      console.log(data.app.treasury);
-      console.log(destination.toString());
-
-      const [subscription] = findProgramAddressSync(
-        [
-          Buffer.from("SUBSCRIPTION"),
-          new PublicKey(data.tier.app).toBuffer(),
-          publicKey.toBuffer(),
-        ],
-        programId
-      );
-
-      const THREAD_PROGRAM = new PublicKey(
-        "3XXuUFfweXBwFgFfYaejLvZE4cGZiHgKiGfMtdxNzYmv"
-      );
-      const [thread] = findProgramAddressSync(
-        [
-          Buffer.from("thread"),
-          subscription.toBuffer(),
-          Buffer.from("subscriber_thread"),
-        ],
-        THREAD_PROGRAM
-      );
-
-      const subscribeInstruction = await program.methods
-        .createSubscription()
-        .accounts({
-          threadProgram: THREAD_PROGRAM,
-          subscriptionThread: thread,
-          app: data.tier.app,
-          tier: tier,
-          subscriber: publicKey,
-          subscriberAta,
-          subscription,
-        })
-        .instruction();
-
-      const payInstruction = await program.methods
-        .completePayment()
-        .accounts({
-          app: data.tier.app,
-          tier: tier,
-          destination,
-          subscriptionThread: thread,
-          subscriberAta,
-          subscription,
-        })
-        .instruction();
-
-      const transaction = new Transaction()
-        .add(subscribeInstruction)
-        .add(payInstruction);
-
-      await confirmTransaction(transaction, sendTransaction);
+      await Plege(wallet).subscription.create({
+        tier: tier,
+      });
       setStatus("SUCCESS");
     } catch (err) {
       console.log(err);
@@ -113,15 +61,11 @@ const Subscribe = () => {
 
   return (
     <div className="h-screen w-full bg-black">
-      {(isLoading || error) && (
+      {!data && (
         <div
           className={`flex h-full w-full items-center justify-center text-white ${overpass}`}
         >
-          {isLoading ? (
-            <Loader className="h-10 w-10 text-white" />
-          ) : (
-            "Not Found"
-          )}
+          {!data ? <Loader className="h-10 w-10 text-white" /> : "Not Found"}
         </div>
       )}
       {data && (
@@ -147,12 +91,12 @@ const Subscribe = () => {
                         className="ml-2.5 h-7 w-7"
                       />
                       <div className="mt-1.5 ml-3 text-xl">
-                        {data.tier.price / 10 ** 6}
+                        {data.tier.price}
                       </div>
                     </div>
                     <div className="mr-4 mt-1 text-lg">/ month</div>
                   </div>
-                  {!publicKey ? (
+                  {!wallet ? (
                     <Wallet
                       style={{
                         width: "100%",
@@ -181,8 +125,8 @@ const Subscribe = () => {
               )}
               <div className="absolute bottom-10 text-center text-xs text-gray-400">
                 By confirming your subscription, you allow {data.app.name} to
-                charge you {data.tier.price / 10 ** 6} USDC every month. You can
-                always cancel your subscription.
+                charge you {data.tier.price} USDC every month. You can always
+                cancel your subscription.
               </div>
             </div>
           </div>

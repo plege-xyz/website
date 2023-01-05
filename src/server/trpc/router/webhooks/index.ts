@@ -1,5 +1,9 @@
 import { router } from "../../trpc";
 
-const webhooks = router({
-    
-})
+import { get } from "./get";
+import { create } from "./create";
+
+export const webhooks = router({
+  get,
+  create,
+});

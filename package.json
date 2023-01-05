@@ -36,7 +36,7 @@
         "date-fns": "^2.29.3",
         "moment": "^2.29.4",
         "next": "13.0.3",
-        "plege": "^0.0.5",
+        "plege": "^0.0.8",
         "react": "18.2.0",
         "react-chartjs-2": "^5.0.1",
         "react-dom": "18.2.0",
