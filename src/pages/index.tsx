@@ -81,7 +81,7 @@ const Home = () => {
         <img
           src="https://media.discordapp.net/attachments/947390920645554236/1060852040542208000/image.png"
           alt=""
-          className="mt-24 -mb-6 rounded-xl border-4 border-[#111]"
+          className="mt-24 -mb-6 rounded-xl border-[5px] border-[#fff]"
         />
       </div>
     </div>
