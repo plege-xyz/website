@@ -56,18 +56,18 @@ model Tier {
 }
 
 model Subscription {
-  id                  Int       @id @default(autoincrement())
-  publicKey           String    @unique
+  id                  Int      @id @default(autoincrement())
+  publicKey           String   @unique
   subscriber          String
   start               DateTime
-  lastPaymentTime     DateTime?
+  lastPaymentTime     DateTime
   payPeriodStart      DateTime
   payPeriodExpiration DateTime
   acceptNewPayments   Boolean
   credits             Int
-  app                 App       @relation(fields: [appId], references: [id])
+  app                 App      @relation(fields: [appId], references: [id])
   appId               Int
-  tier                Tier      @relation(fields: [tierId], references: [id])
+  tier                Tier     @relation(fields: [tierId], references: [id])
   tierId              Int
 
   @@index([tierId])
