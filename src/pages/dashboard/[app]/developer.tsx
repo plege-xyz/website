@@ -31,9 +31,9 @@ const Developer = () => {
 
   useEffect(() => {
     if (app) {
-      mutate({
-        app,
-      });
+      // mutate({
+      //   app,
+      // });
     }
   }, [app, mutate]);
 
@@ -67,7 +67,7 @@ const Developer = () => {
 
             {!webhooks ? (
               <div className="flex h-96 w-full items-center justify-center">
-                <Loader className="h-10 w-10 text-white" />
+                <Loader className="mt-32 h-10 w-10 text-white" />
               </div>
             ) : (
               <div className="flex w-full justify-center">
