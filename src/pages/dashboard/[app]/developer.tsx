@@ -31,9 +31,9 @@ const Developer = () => {
 
   useEffect(() => {
     if (app) {
-      // mutate({
-      //   app,
-      // });
+      mutate({
+        app,
+      });
     }
   }, [app, mutate]);
 
