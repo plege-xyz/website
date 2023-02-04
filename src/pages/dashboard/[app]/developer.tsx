@@ -26,7 +26,7 @@ const Developer = () => {
     setIsCreateWebhookModalOpen(false);
   };
 
-  const { isLoading, mutate, data } = trpc.webhooks.get.useMutation();
+  const { mutate, data } = trpc.webhooks.get.useMutation();
   const webhooks = data?.webhook;
 
   useEffect(() => {

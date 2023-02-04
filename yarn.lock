@@ -4670,10 +4670,10 @@ pino@^6.7.0:
     quick-format-unescaped "^4.0.3"
     sonic-boom "^1.0.2"
 
-plege@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/plege/-/plege-0.0.8.tgz#7df8a6f2b7b202e6b0a081ad8651a215f8ddd1cb"
-  integrity sha512-sU3AZIZu2VvbxjQGzQdJxxTmsf93Grld9ZqauzW3ONhIWux9q92cAc0lQ38QM3BAewMmA53Vg+OVYHysYbtyGw==
+plege@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/plege/-/plege-0.0.11.tgz#86c958c2785e13d9c333855391262d1c8572d58e"
+  integrity sha512-PrfvzqvwFathoMZIj5ss7PX1x0IJErlU4zFjE9xFbK7lYcuhqGR4Z4wmlzFcMLkaYIKSAZXDim9dyUV9/EEaZA==
   dependencies:
     "@project-serum/anchor" "^0.26.0"
     "@solana/spl-token" "^0.3.6"

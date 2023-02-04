@@ -22,11 +22,10 @@ const CreateWebhookModal = ({ closeModal }: { closeModal: () => void }) => {
   const createWebhook = async () => {
     if (!url) return toast.error("Enter a webhook url");
 
-    try {
-      new URL(url);
-    } catch {
-      return toast.error("Invalid URL");
-    }
+    const regex =
+      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+
+    if (!regex.test(url)) return toast.error("Invalid URL");
 
     await mutate({
       app,
