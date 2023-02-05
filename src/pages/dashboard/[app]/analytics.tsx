@@ -164,7 +164,6 @@ const App = () => {
       value: getChurn(),
     },
   ];
-  console.log(subscriptions);
 
   return (
     <Layout>

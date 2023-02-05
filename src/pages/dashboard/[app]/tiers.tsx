@@ -87,9 +87,7 @@ const Tiers = () => {
                     >
                       <div className="flex">
                         <div className="leading-0 w-[28.8rem]">{tier.name}</div>
-                        <div className="text-gray-400">
-                          {/* {getTierName(subscription.tier)} */}
-                        </div>
+                        <div className="text-gray-400"></div>
                       </div>
                       <div className="flex items-center">
                         <div className="mr-10 flex w-14 justify-center">

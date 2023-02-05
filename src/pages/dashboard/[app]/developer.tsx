@@ -14,6 +14,14 @@ const Developer = () => {
   const router = useRouter();
   const app = router.query.app as string;
 
+  const { mutate, data: webhooks } = trpc.webhooks.get.useMutation();
+
+  const getData = () => {
+    mutate({
+      app,
+    });
+  };
+
   const copy = () => {
     navigator.clipboard.writeText(app);
   };
@@ -24,16 +32,12 @@ const Developer = () => {
 
   const closeModal = () => {
     setIsCreateWebhookModalOpen(false);
+    getData();
   };
-
-  const { mutate, data } = trpc.webhooks.get.useMutation();
-  const webhooks = data?.webhook;
 
   useEffect(() => {
     if (app) {
-      mutate({
-        app,
-      });
+      getData();
     }
   }, [app, mutate]);
 
@@ -80,12 +84,8 @@ const Developer = () => {
                     <div className="flex h-14 w-full items-center justify-between px-8">
                       <div className="flex">
                         <div className="w-[28.8rem]">url</div>
-                        {/* <div className="">tier</div> */}
                       </div>
-                      <div className="flex">
-                        {/* <div className="mr-[5.5rem]">start</div>
-                        <div className="mr-3">status</div> */}
-                      </div>
+                      <div className="flex"></div>
                     </div>
                     {webhooks.map((webhook, key) => (
                       <div
@@ -94,14 +94,10 @@ const Developer = () => {
                       >
                         <div className="flex">
                           <div className="leading-0">{webhook.url}</div>
-                          <div className="text-gray-400">
-                            {/* {getTierName(subscription.tier)} */}
-                          </div>
+                          <div className="text-gray-400"></div>
                         </div>
                         <div className="flex items-center">
-                          <div className="mr-10">
-                            {/* {formatDate(subscription.start)} */}
-                          </div>
+                          <div className="mr-10"></div>
                         </div>
                       </div>
                     ))}

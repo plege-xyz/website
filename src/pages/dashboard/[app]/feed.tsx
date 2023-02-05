@@ -43,8 +43,6 @@ const Feed = () => {
     }
   }, [app, wallet]);
 
-  console.log(subscriptions);
-
   const getTierName = (tier: string) => {
     return tiers!.find((_tier) => {
       return tier === _tier.publicKey;
@@ -73,8 +71,6 @@ const Feed = () => {
     return `${day} ${months[monthIndex]}, ${year}`;
   }
 
-  console.log(subscriptions);
-
   return (
     <Layout>
       <div className="flex w-full justify-center">
@@ -94,7 +90,7 @@ const Feed = () => {
                   <div className="flex h-14 w-full items-center justify-between px-8">
                     <div className="flex">
                       <div className="w-[28.8rem]">subscriber</div>
-                      <div className="">tier</div>
+                      <div>tier</div>
                     </div>
                     <div className="flex">
                       <div className="mr-[5.5rem]">start</div>

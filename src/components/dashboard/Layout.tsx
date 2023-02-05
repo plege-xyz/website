@@ -25,10 +25,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         router.pathname !== "/dashboard" && <Nav url={url} />}
       <div className="flex w-full flex-grow flex-col">
         {wallet ? (
-          <div className="flex-grow flex flex-col">
+          <div className="flex flex-grow flex-col">
             <div className="hidden lg:block">{children}</div>
             <div
-              className={`flex-grow flex h-full items-center justify-center text-xl lg:hidden ${overpass}`}
+              className={`flex h-full flex-grow items-center justify-center text-xl lg:hidden ${overpass}`}
             >
               VIEW ON DESKTOP
             </div>

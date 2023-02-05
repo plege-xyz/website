@@ -8,7 +8,7 @@ export const get = publicProcedure
     })
   )
   .mutation(async ({ ctx: { prisma }, input: { app } }) => {
-    return await prisma.app.findUnique({
+    const webhooks = await prisma.app.findUnique({
       where: {
         publicKey: app,
       },
@@ -20,4 +20,6 @@ export const get = publicProcedure
         },
       },
     });
+
+    return webhooks?.webhook ? webhooks.webhook : [];
   });
