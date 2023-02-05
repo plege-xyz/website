@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useState } from "react";
 import Layout from "@/components/dashboard/Layout";
 import CreateApp from "@/components/dashboard/CreateApp";

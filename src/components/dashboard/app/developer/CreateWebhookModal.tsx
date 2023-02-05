@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { overpass } from "@/utils/fonts";
 import Loader from "@/components/Loader";
 import { useState } from "react";
@@ -5,7 +6,6 @@ import { trpc } from "@/utils/trpc";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { URL } from "url";
 
 const CreateWebhookModal = ({ closeModal }: { closeModal: () => void }) => {
   const [url, setUrl] = useState<string>();
