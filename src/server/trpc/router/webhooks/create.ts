@@ -9,7 +9,7 @@ export const create = publicProcedure
       url: z.string(),
     })
   )
-  .mutation(async ({ ctx: { prisma }, input: { app, publicKey, url } }) => {
+  .mutation(async ({ ctx: { prisma }, input: { app, url } }) => {
     await prisma.webhook.create({
       data: {
         url: url,

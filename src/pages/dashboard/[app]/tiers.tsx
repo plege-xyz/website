@@ -7,7 +7,6 @@ import { overpass, tt } from "@/utils/fonts";
 import { Plege } from "@/utils/plege";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
-import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import type { Tier } from "plege";

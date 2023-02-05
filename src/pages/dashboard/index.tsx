@@ -6,27 +6,14 @@ import CreateAppModal from "@/components/dashboard/CreateAppModal";
 import { App } from "@/components/dashboard/App";
 import { Plege } from "@/utils/plege";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
-import { App as AppType, FakeWallet } from "plege";
-import { overpass, tt } from "@/utils/fonts";
+import type { App as AppType } from "plege";
+import { overpass } from "@/utils/fonts";
 import { toast } from "react-hot-toast";
 
 const Dashboard = () => {
   const [isCreateAppModalOpen, setIsCreateAppModalOpen] = useState(false);
   const [apps, setApps] = useState<AppType[]>();
   const [unauthorized, setunauthorized] = useState<boolean>(false);
-
-  const refresh = () => {
-    setApps(undefined);
-  };
-
-  const openCreateAppModal = () => {
-    document.body.scrollTop = document.documentElement.scrollTop = 0;
-    setIsCreateAppModalOpen(true);
-  };
-
-  const closeCreateAppModal = () => {
-    setIsCreateAppModalOpen(false);
-  };
 
   const wallet = useAnchorWallet();
 
@@ -43,6 +30,19 @@ const Dashboard = () => {
       getApps();
     }
   }, [apps, wallet]);
+
+  const refresh = () => {
+    setApps(undefined);
+  };
+
+  const openCreateAppModal = () => {
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
+    setIsCreateAppModalOpen(true);
+  };
+
+  const closeCreateAppModal = () => {
+    setIsCreateAppModalOpen(false);
+  };
 
   const createAccount = async () => {
     await Plege(wallet!)
