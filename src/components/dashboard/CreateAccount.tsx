@@ -15,6 +15,7 @@ const CreateAccount = () => {
     await Plege(wallet!)
       .user.create()
       .then(() => {
+        setIsLoading(true);
         window.location.reload();
       })
       .catch((err) => {

@@ -9,10 +9,11 @@ import { Plege } from "@/utils/plege";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import type { Tier as ITier } from "plege"
 
 const Tiers = () => {
   const [isTierCreateModalOpen, setIsTierCreateModalOpen] = useState(false);
-  const [tiers, setTiers] = useState<Tier[]>();
+  const [tiers, setTiers] = useState<ITier[]>();
 
   const router = useRouter();
   const app = router.query.app as string;
