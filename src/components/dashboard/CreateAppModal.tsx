@@ -24,12 +24,6 @@ const CreateAppModal = ({
 
   const { wallet: w } = useWallet();
 
-  // useEffect(() => {
-  //   if (wallet && !treasury) {
-  //     setTreasury(wallet.publicKey.toBase58());
-  //   }
-  // }, [wallet]);
-
   const createAppHandler = async () => {
     try {
       if (!name) return toast.error("Enter a name for your app");
@@ -62,7 +56,7 @@ const CreateAppModal = ({
   };
 
   return (
-    <div className="absolute flex h-screen w-full items-center justify-center overflow-hidden bg-[rgba(0,0,0,0.7)]">
+    <div className="absolute flex h-[calc(100vh-4rem)] w-full items-center justify-center overflow-hidden bg-[rgba(0,0,0,0.7)]">
       <div className="w-full max-w-sm">
         <div className="w-full rounded-lg border border-[#111] bg-[rgba(5,5,5)] p-5">
           <input

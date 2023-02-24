@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import CreateWebhookModal from "@/components/dashboard/app/developer/CreateWebhookModal";
-import Layout from "@/components/dashboard/Layout";
+import Layout from "@/components/dashboard/global/Layout";
 import { overpass, tt } from "@/utils/fonts";
 import { trpc } from "@/utils/trpc";
 import { DocumentDuplicateIcon } from "@heroicons/react/20/solid";

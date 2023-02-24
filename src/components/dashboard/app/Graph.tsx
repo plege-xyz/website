@@ -1,4 +1,4 @@
-import { overpass, _overpass } from "@/utils/fonts";
+import { _overpass } from "@/utils/fonts";
 import { Bar } from "react-chartjs-2";
 import type { ChartData, ChartOptions } from "chart.js";
 import { Chart as ChartJS, registerables } from "chart.js";
@@ -12,6 +12,8 @@ const Graph = ({
   subscriptions: Subscription[];
   tiers: Tier[];
 }) => {
+  console.log(subscriptions);
+
   function getLast30Days() {
     const today = new Date();
     const dates = [];
@@ -36,7 +38,7 @@ const Graph = ({
       .sort((a, b) => {
         return a.price - b.price;
       })
-      .map((tier, i) => {
+      .map((tier) => {
         const tierSubscriptions = subscriptions.filter(
           (subscription) => subscription.tier === tier.publicKey
         );
@@ -46,16 +48,15 @@ const Graph = ({
           data: dates.map((date) => {
             const subscriptionsOnDate = tierSubscriptions.filter(
               (subscription) => {
-                const startDate = subscription.start;
-                const payPeriodStartDate = subscription.payPeriodStart;
-                return (
-                  (startDate.getDay() === date.getDay() &&
-                    startDate.getMonth() === date.getMonth() &&
-                    startDate.getFullYear() === date.getFullYear()) ||
-                  (payPeriodStartDate.getDay() === date.getDay() &&
-                    payPeriodStartDate.getMonth() === date.getMonth() &&
-                    payPeriodStartDate.getFullYear() === date.getFullYear())
+                const startDate = new Date(subscription.start);
+                const payPeriodStartDate = new Date(
+                  subscription.payPeriodStart
                 );
+                const payPeriodEndDate = new Date(
+                  subscription.payPeriodExpiration
+                );
+
+                return startDate <= date && payPeriodEndDate >= date;
               }
             );
             return subscriptionsOnDate.length;
@@ -103,6 +104,7 @@ const Graph = ({
         stacked: true,
       },
       y: {
+        suggestedMax: 10,
         ticks: {
           autoSkip: true,
           maxTicksLimit: 5,

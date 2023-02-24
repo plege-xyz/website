@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Header from "./Header";
-import { default as Nav } from "./app/Header";
+import { default as Nav } from "../app/Header";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
-import Wallet from "../wallet";
+import Wallet from "../../wallet";
 import { overpass } from "@/utils/fonts";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
